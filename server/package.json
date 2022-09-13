@@ -1,0 +1,19 @@
+{
+  "name": "guess-who-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Christian Lawson-Perfect",
+  "license": "MIT",
+  "dependencies": {
+    "finalhandler": "^1.1.2",
+    "friendly-words": "glitchdotcom/friendly-words",
+    "serve-static": "^1.14.2",
+    "ws": "^8.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
