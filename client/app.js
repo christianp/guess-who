@@ -5280,6 +5280,9 @@ var $author$project$Multiplayer$LeaveGame = {$: 'LeaveGame'};
 var $author$project$GuessWho$SetRound = function (a) {
 	return {$: 'SetRound', a: a};
 };
+var $author$project$GuessWho$ShowChosenCards = function (a) {
+	return {$: 'ShowChosenCards', a: a};
+};
 var $author$project$GuessWho$StartShufflingCards = {$: 'StartShufflingCards'};
 var $author$project$GuessWho$WaitingToStart = {$: 'WaitingToStart'};
 var $elm$core$Basics$composeR = F3(
@@ -5306,6 +5309,7 @@ var $author$project$GuessWho$is_in_progress = function (game) {
 var $elm$core$Basics$negate = function (n) {
 	return -n;
 };
+var $elm$core$Basics$not = _Basics_not;
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5544,6 +5548,14 @@ var $author$project$GuessWho$control_buttons = F2(
 				msg: $author$project$Multiplayer$game_message(
 					$author$project$GuessWho$SetRound(round_number + 1)),
 				show: $author$project$GuessWho$is_in_progress(game) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge)
+			},
+				{
+				disabled: false,
+				key: 't',
+				label: game.show_chosen_cards ? 'Hide target cards' : 'Show target cards',
+				msg: $author$project$Multiplayer$game_message(
+					$author$project$GuessWho$ShowChosenCards(!game.show_chosen_cards)),
+				show: $author$project$GuessWho$is_in_progress(game) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge)
 			}
 			]);
 	});
@@ -5754,7 +5766,6 @@ var $author$project$GuessWho$get_my_state = F2(
 					game.players)));
 	});
 var $elm$core$Debug$log = _Debug_log;
-var $elm$core$Basics$not = _Basics_not;
 var $author$project$GuessWho$handle_keypress = function (model) {
 	var _v0 = model.game;
 	if (_v0.$ === 'Just') {
@@ -6084,6 +6095,7 @@ var $author$project$GuessWho$blank_game = F3(
 				my_index: my_index,
 				players: A2($elm$core$List$indexedMap, $author$project$GuessWho$blank_player, players),
 				replaying: false,
+				show_chosen_cards: false,
 				stage: $author$project$GuessWho$WaitingToStart
 			},
 			$elm$core$Platform$Cmd$none);
@@ -6097,6 +6109,7 @@ var $author$project$GuessWho$ShuffledCards = function (a) {
 	return {$: 'ShuffledCards', a: a};
 };
 var $author$project$Multiplayer$StartReplay = {$: 'StartReplay'};
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$json$Json$Decode$array = _Json_decodeArray;
 var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$core$Tuple$pair = F2(
@@ -6201,6 +6214,14 @@ var $author$project$GuessWho$decode_move = A2(
 								$author$project$GuessWho$SetRound,
 								A2($elm$core$Basics$composeR, $author$project$Multiplayer$OtherGameMsg, $elm$core$List$singleton)),
 							A2($elm$json$Json$Decode$field, 'round', $elm$json$Json$Decode$int));
+					case 'show chosen cards':
+						return A2(
+							$elm$json$Json$Decode$map,
+							A2(
+								$elm$core$Basics$composeR,
+								$author$project$GuessWho$ShowChosenCards,
+								A2($elm$core$Basics$composeR, $author$project$Multiplayer$OtherGameMsg, $elm$core$List$singleton)),
+							A2($elm$json$Json$Decode$field, 'show', $elm$json$Json$Decode$bool));
 					case 'click piece':
 						return A4(
 							$elm$json$Json$Decode$map3,
@@ -6267,6 +6288,7 @@ var $elm$json$Json$Encode$array = F2(
 				_Json_emptyArray(_Utils_Tuple0),
 				entries));
 	});
+var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
 var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
 var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
@@ -7268,9 +7290,25 @@ var $author$project$GuessWho$update_game = F3(
 										'row',
 										$elm$json$Json$Encode$int(row))
 									])));
-					default:
+					case 'StartShufflingCards':
 						var _v4 = msg.a;
 						return _Utils_Tuple2(game, $author$project$GuessWho$shuffle_cards);
+					default:
+						var show = msg.a.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								game,
+								{show_chosen_cards: show}),
+							A3(
+								$author$project$GuessWho$send_move,
+								game,
+								'show chosen cards',
+								_List_fromArray(
+									[
+										_Utils_Tuple2(
+										'show',
+										$elm$json$Json$Encode$bool(show))
+									])));
 				}
 			case 'PlayerJoined':
 				var id = msg.a;
@@ -7875,7 +7913,6 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
-var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
 		return A2(
@@ -8074,8 +8111,8 @@ var $author$project$GuessWho$view_chosen_card = F3(
 				}()
 				]));
 	});
-var $author$project$GuessWho$view_player = F4(
-	function (round_number, my_state, index, state) {
+var $author$project$GuessWho$view_player = F5(
+	function (round_number, my_state, show_chosen_card, index, state) {
 		var round = A2(
 			$elm$core$Maybe$withDefault,
 			$author$project$GuessWho$blank_round,
@@ -8084,8 +8121,15 @@ var $author$project$GuessWho$view_player = F4(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class(
-					'player player-' + $author$project$GuessWho$fi(index))
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('player', true),
+							_Utils_Tuple2(
+							'player-' + $author$project$GuessWho$fi(index),
+							true),
+							_Utils_Tuple2('show-chosen-card', show_chosen_card)
+						]))
 				]),
 			_List_fromArray(
 				[
@@ -8095,6 +8139,7 @@ var $author$project$GuessWho$view_player = F4(
 	});
 var $author$project$GuessWho$view_boards = F3(
 	function (round_number, my_state, game) {
+		var vp = A2($author$project$GuessWho$view_player, round_number, my_state);
 		var _v0 = my_state.role;
 		if (_v0.$ === 'Playing') {
 			return A2(
@@ -8105,7 +8150,7 @@ var $author$project$GuessWho$view_boards = F3(
 					]),
 				_List_fromArray(
 					[
-						A4($author$project$GuessWho$view_player, round_number, my_state, game.my_index - 1, my_state)
+						A3(vp, true, game.my_index - 1, my_state)
 					]));
 		} else {
 			return A2(
@@ -8116,7 +8161,7 @@ var $author$project$GuessWho$view_boards = F3(
 					]),
 				A2(
 					$elm$core$List$indexedMap,
-					A2($author$project$GuessWho$view_player, round_number, my_state),
+					vp(game.show_chosen_cards),
 					$author$project$GuessWho$playing_players(game)));
 		}
 	});

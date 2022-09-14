@@ -72,6 +72,7 @@ type alias Game =
     , my_index : Int
     , stage : GameStage
     , replaying : Bool
+    , show_chosen_cards : Bool
     }
 
 type alias Model = MultiplayerGame Game
@@ -81,6 +82,7 @@ type GameMsg
     | StartShufflingCards
     | ShuffledCards (List (Array Card, List Card))
     | SetRound Int
+    | ShowChosenCards Bool
 
 type alias MetaGameMsg = Multiplayer.GameMsg GameMsg
 
@@ -242,6 +244,7 @@ blank_game game_id players my_index =
       , players = List.indexedMap blank_player players
       , stage = WaitingToStart
       , replaying = False
+      , show_chosen_cards = False
       }
     , Cmd.none
     )
@@ -315,6 +318,9 @@ decode_move =
 
                 "set round" ->
                     JD.map (SetRound >> OtherGameMsg >> List.singleton) (JD.field "round" JD.int)
+
+                "show chosen cards" ->
+                    JD.map (ShowChosenCards >> OtherGameMsg >> List.singleton) (JD.field "show" JD.bool)
 
                 "click piece" ->
                     JD.map3
@@ -392,7 +398,6 @@ update_game my_id msg game =
                             List.map (Just >> Round board) chosen_cards
 
                     
-                    -- (round, player)
                     each_players_rounds : List (List Round)
                     each_players_rounds = (List.map make_round rounds)
 
@@ -434,6 +439,13 @@ update_game my_id msg game =
                 )
 
             OtherGameMsg StartShufflingCards -> (game, shuffle_cards)
+
+            OtherGameMsg (ShowChosenCards show) ->
+                ( { game | show_chosen_cards = show }
+                , send_move game "show chosen cards"
+                    [ ("show", JE.bool show)
+                    ]
+                )
 
             PlayerJoined id -> { game | players = game.players++[blank_player (List.length game.players) id] } |> nocmd
 
@@ -662,6 +674,12 @@ control_buttons game my_state =
           , label = "Next round"
           , key = "n"
           }
+        , { show = is_in_progress game && my_state.role == InCharge
+          , disabled = False
+          , msg = Multiplayer.game_message (ShowChosenCards (not game.show_chosen_cards))
+          , label = if game.show_chosen_cards then "Hide target cards" else "Show target cards"
+          , key = "t"
+          }
         ]
 
 
@@ -686,23 +704,31 @@ playing_players game = List.filter is_player game.players
 
 view_boards : Int -> PlayerState -> Game -> Html GameMsg
 view_boards round_number my_state game =
-    case my_state.role of
-        Playing -> 
-            div
-                [ HA.class "container one" ]
-                [ view_player round_number my_state (game.my_index-1) my_state ]
-        _ ->
-            div
-                [ HA.class "container both" ]
-                (List.indexedMap (view_player round_number my_state) (playing_players game))
+    let
+        vp = view_player round_number my_state
+    in
+        case my_state.role of
+            Playing -> 
+                div
+                    [ HA.class "container one" ]
+                    [ vp True (game.my_index-1) my_state ]
+            _ ->
+                div
+                    [ HA.class "container both" ]
+                    (List.indexedMap (vp game.show_chosen_cards) (playing_players game))
 
-view_player : Int -> PlayerState -> Int -> PlayerState -> Html GameMsg
-view_player round_number my_state index state =
+view_player : Int -> PlayerState -> Bool -> Int -> PlayerState -> Html GameMsg
+view_player round_number my_state show_chosen_card index state =
     let
         round = Array.get round_number state.rounds |> Maybe.withDefault blank_round
     in
         div
-            [ HA.class <| "player player-"++(fi index) ]
+            [ HA.classList
+                [ ("player",True)
+                , ("player-"++(fi index),True)
+                , ("show-chosen-card", show_chosen_card)
+                ]
+            ]
 
             [ view_chosen_card round my_state state
             , view_board round my_state state

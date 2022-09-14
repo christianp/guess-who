@@ -61,9 +61,9 @@ class Game {
 
     remove_player(player_id) {
         console.log(`remove ${player_id}`);
-        console.log(this.players);
-        this.players = this.players.filter(id=>id!=player_id);
-        this.end();
+        //console.log(this.players);
+        //this.players = this.players.filter(id=>id!=player_id);
+        //this.end();
     }
 
     info() {

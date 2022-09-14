@@ -103,6 +103,9 @@ main {
     justify-content: center;
 }
 
+.player:not(.show-chosen-card) .chosen-card {
+    visibility: hidden;
+}
 
 .chosen-card {
   grid-area: chosen;
