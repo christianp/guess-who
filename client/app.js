@@ -5274,100 +5274,56 @@ var $author$project$Multiplayer$WebsocketMessage = function (a) {
 	return {$: 'WebsocketMessage', a: a};
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
-var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $author$project$GuessWho$receiveMessage = _Platform_incomingPort('receiveMessage', $elm$json$Json$Decode$value);
-var $author$project$GuessWho$subscriptions = function (model) {
-	return $elm$core$Platform$Sub$batch(
-		_List_fromArray(
-			[
-				$author$project$GuessWho$receiveMessage($author$project$Multiplayer$WebsocketMessage)
-			]));
-};
-var $author$project$GuessWho$WaitingToStart = {$: 'WaitingToStart'};
+var $elm$json$Json$Decode$andThen = _Json_andThen;
 var $author$project$GuessWho$InCharge = {$: 'InCharge'};
-var $author$project$GuessWho$Observing = {$: 'Observing'};
-var $author$project$GuessWho$Playing = {$: 'Playing'};
-var $author$project$GuessWho$cols = 5;
-var $author$project$GuessWho$make_piece = function (card) {
-	return {card: card, up: true};
+var $author$project$Multiplayer$LeaveGame = {$: 'LeaveGame'};
+var $author$project$GuessWho$SetRound = function (a) {
+	return {$: 'SetRound', a: a};
 };
-var $elm$core$Elm$JsArray$map = _JsArray_map;
-var $elm$core$Array$map = F2(
-	function (func, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = function (node) {
-			if (node.$ === 'SubTree') {
-				var subTree = node.a;
-				return $elm$core$Array$SubTree(
-					A2($elm$core$Elm$JsArray$map, helper, subTree));
-			} else {
-				var values = node.a;
-				return $elm$core$Array$Leaf(
-					A2($elm$core$Elm$JsArray$map, func, values));
-			}
-		};
-		return A4(
-			$elm$core$Array$Array_elm_builtin,
-			len,
-			startShift,
-			A2($elm$core$Elm$JsArray$map, helper, tree),
-			A2($elm$core$Elm$JsArray$map, func, tail));
+var $author$project$GuessWho$StartShufflingCards = {$: 'StartShufflingCards'};
+var $author$project$GuessWho$WaitingToStart = {$: 'WaitingToStart'};
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
 	});
-var $author$project$GuessWho$rows = 5;
-var $author$project$GuessWho$make_board = function (cards) {
-	var pieces = A2($elm$core$Array$map, $author$project$GuessWho$make_piece, cards);
-	return {cells: pieces, height: $author$project$GuessWho$rows, width: $author$project$GuessWho$cols};
+var $author$project$Multiplayer$GameMsg = function (a) {
+	return {$: 'GameMsg', a: a};
 };
-var $author$project$GuessWho$blank_player = F2(
-	function (i, id) {
-		return {
-			board: $author$project$GuessWho$make_board($elm$core$Array$empty),
-			chosen: $elm$core$Maybe$Nothing,
-			id: id,
-			role: function () {
-				switch (i) {
-					case 0:
-						return $author$project$GuessWho$InCharge;
-					case 1:
-						return $author$project$GuessWho$Playing;
-					case 2:
-						return $author$project$GuessWho$Playing;
-					default:
-						return $author$project$GuessWho$Observing;
-				}
-			}()
-		};
-	});
-var $author$project$GuessWho$blank_game = F3(
-	function (game_id, players, my_index) {
-		return _Utils_Tuple2(
-			{
-				id: game_id,
-				my_index: my_index,
-				players: A2($elm$core$List$indexedMap, $author$project$GuessWho$blank_player, players),
-				replaying: false,
-				stage: $author$project$GuessWho$WaitingToStart
-			},
-			$elm$core$Platform$Cmd$none);
-	});
-var $author$project$GuessWho$ClickPiece = F3(
-	function (a, b, c) {
-		return {$: 'ClickPiece', a: a, b: b, c: c};
-	});
-var $author$project$Multiplayer$EndReplay = {$: 'EndReplay'};
 var $author$project$Multiplayer$OtherGameMsg = function (a) {
 	return {$: 'OtherGameMsg', a: a};
 };
-var $author$project$GuessWho$ShuffledCards = F2(
-	function (a, b) {
-		return {$: 'ShuffledCards', a: a, b: b};
+var $author$project$Multiplayer$game_message = A2($elm$core$Basics$composeR, $author$project$Multiplayer$OtherGameMsg, $author$project$Multiplayer$GameMsg);
+var $elm$core$Basics$ge = _Utils_ge;
+var $author$project$GuessWho$is_in_progress = function (game) {
+	var _v0 = game.stage;
+	if (_v0.$ === 'InProgress') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
 	});
-var $author$project$Multiplayer$StartReplay = {$: 'StartReplay'};
-var $elm$json$Json$Decode$andThen = _Json_andThen;
-var $elm$json$Json$Decode$array = _Json_decodeArray;
+var $author$project$GuessWho$Playing = {$: 'Playing'};
+var $author$project$GuessWho$is_player = function (p) {
+	return _Utils_eq(p.role, $author$project$GuessWho$Playing);
+};
+var $author$project$GuessWho$playing_players = function (game) {
+	return A2($elm$core$List$filter, $author$project$GuessWho$is_player, game.players);
+};
 var $elm$core$Array$fromListHelp = F3(
 	function (list, nodeList, nodeListSize) {
 		fromListHelp:
@@ -5403,481 +5359,195 @@ var $elm$core$Array$fromList = function (list) {
 		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
 	}
 };
-var $author$project$GuessWho$card_definitions = $elm$core$Array$fromList(
+var $author$project$GuessWho$round_definitions = A2(
+	$elm$core$List$map,
+	$elm$core$Array$fromList,
 	_List_fromArray(
 		[
-			{image: 'viazovska.jpg', name: 'Viazovska'},
-			{image: 'avila.jpg', name: 'Avila'},
-			{image: 'mirzakhani.jpg', name: 'Mirzakhani'},
-			{image: 'tao.jpg', name: 'Tao'},
-			{image: 'perelman.jpg', name: 'Perelman'},
-			{image: 'zhang.jpg', name: 'Zhang'},
-			{image: 'daubechies.jpg', name: 'Daubechies'},
-			{image: 'bourgain.jpg', name: 'Bourgain'},
-			{image: 'wiles.jpg', name: 'Wiles'},
-			{image: 'shamir.jpg', name: 'Shamir'},
-			{image: 'yau.jpg', name: 'Yau'},
-			{image: 'matiyasevich.jpg', name: 'Matiyasevich'},
-			{image: 'thurston.jpg', name: 'Thurston'},
-			{image: 'uhlenbeck.jpg', name: 'Uhlenbeck'},
-			{image: 'conway.jpg', name: 'Conway'},
-			{image: 'langlands.jpg', name: 'Langlands'},
-			{image: 'cohen.jpg', name: 'Cohen'},
-			{image: 'easley.jpg', name: 'Easley'},
-			{image: 'appel.jpg', name: 'Appel'},
-			{image: 'penrose.jpg', name: 'Penrose'},
-			{image: 'nash.jpg', name: 'Nash'},
-			{image: 'grothendieck.jpg', name: 'Grothendieck'},
-			{image: 'serre.jpg', name: 'Serre'},
-			{image: 'mandelbrot.jpg', name: 'Mandelbrot'},
-			{image: 'wilkins.jpg', name: 'Wilkins'},
-			{image: 'robinson.jpg', name: 'Robinson'},
-			{image: 'blackwell.jpg', name: 'Blackwell'},
-			{image: 'johnson.jpg', name: 'Johnson'},
-			{image: 'lorenz.jpg', name: 'Lorenz'},
-			{image: 'shannon.jpg', name: 'Shannon'},
-			{image: 'gardner.jpg', name: 'Gardner'},
-			{image: 'erdos.jpg', name: 'Erdős'},
-			{image: 'turing.jpg', name: 'Turing'},
-			{image: 'chern.jpg', name: 'Chern'},
-			{image: 'ulam.jpg', name: 'Ulam'},
-			{image: 'weil.jpg', name: 'Weil'},
-			{image: 'godel.jpg', name: 'Gödel'},
-			{image: 'neumann.jpg', name: 'von Neumann'},
-			{image: 'kolmogorov.jpg', name: 'Kolmogorov'},
-			{image: 'cartwright.jpg', name: 'Cartwright'},
-			{image: 'escher.jpg', name: 'Escher'},
-			{image: 'cox.jpg', name: 'Cox'},
-			{image: 'ramanujan.jpg', name: 'Ramanujan'},
-			{image: 'noether.jpg', name: 'Noether'},
-			{image: 'einstein.jpg', name: 'Einstein'},
-			{image: 'hardy.jpg', name: 'Hardy'},
-			{image: 'russell.jpg', name: 'Russell'},
-			{image: 'hilbert.jpg', name: 'Hilbert'},
-			{image: 'peano.jpg', name: 'Peano'},
-			{image: 'poincare.jpg', name: 'Poincaré'},
-			{image: 'kovalevskaya.jpg', name: 'Kovalevskaya'},
-			{image: 'cantor.jpg', name: 'Cantor'},
-			{image: 'lie.jpg', name: 'Lie'},
-			{image: 'carroll.jpg', name: 'Carroll'},
-			{image: 'dedekind.jpg', name: 'Dedekind'},
-			{image: 'riemann.jpg', name: 'Riemann'},
-			{image: 'cayley.jpg', name: 'Cayley'},
-			{image: 'nightingale.jpg', name: 'Nightingale'},
-			{image: 'lovelace.jpg', name: 'Lovelace'},
-			{image: 'boole.jpg', name: 'Boole'},
-			{image: 'sylvester.jpg', name: 'Sylvester'},
-			{image: 'galois.jpg', name: 'Galois'},
-			{image: 'jacobi.jpg', name: 'Jacobi'},
-			{image: 'de-morgan.jpg', name: 'De Morgan'},
-			{image: 'hamilton.jpg', name: 'Hamilton'},
-			{image: 'bolyai.jpg', name: 'Bolyai'},
-			{image: 'abel.jpg', name: 'Abel'},
-			{image: 'lobachevsky.jpg', name: 'Lobachevsky'},
-			{image: 'babbage.jpg', name: 'Babbage'},
-			{image: 'mobius.jpg', name: 'Möbius'},
-			{image: 'cauchy.jpg', name: 'Cauchy'},
-			{image: 'somerville.jpg', name: 'Somerville'},
-			{image: 'gauss.jpg', name: 'Gauss'},
-			{image: 'germain.jpg', name: 'Germain'},
-			{image: 'zhenyi.jpg', name: 'Wang'},
-			{image: 'fourier.jpg', name: 'Fourier'},
-			{image: 'legendre.jpg', name: 'Legendre'},
-			{image: 'mascheroni.jpg', name: 'Mascheroni'},
-			{image: 'laplace.jpg', name: 'Laplace'},
-			{image: 'monge.jpg', name: 'Monge'},
-			{image: 'lagrange.jpg', name: 'Lagrange'},
-			{image: 'banneker.jpg', name: 'Banneker'},
-			{image: 'lambert.jpg', name: 'Lambert'},
-			{image: 'agnesi.jpg', name: 'Agnesi'},
-			{image: 'euler.jpg', name: 'Euler'},
-			{image: 'chatelet.jpg', name: 'Du Châtelet'},
-			{image: 'bernoulli-2.jpg', name: 'Bernoulli'},
-			{image: 'simson.jpg', name: 'Simson'},
-			{image: 'de-moivre.jpg', name: 'De Moivre'},
-			{image: 'bernoulli-1.jpg', name: 'Bernoulli'},
-			{image: 'leibniz.jpg', name: 'Leibniz'},
-			{image: 'seki.jpg', name: 'Seki'},
-			{image: 'newton.jpg', name: 'Newton'},
-			{image: 'pascal.jpg', name: 'Pascal'},
-			{image: 'wallis.jpg', name: 'Wallis'},
-			{image: 'fermat.jpg', name: 'Fermat'},
-			{image: 'cavalieri.jpg', name: 'Cavalieri'},
-			{image: 'descartes.jpg', name: 'Descartes'},
-			{image: 'desargues.jpg', name: 'Desargues'},
-			{image: 'mersenne.jpg', name: 'Mersenne'},
-			{image: 'kepler.jpg', name: 'Kepler'},
-			{image: 'galileo.jpg', name: 'Galileo'},
-			{image: 'napier.jpg', name: 'Napier'},
-			{image: 'stevin.jpg', name: 'Stevin'},
-			{image: 'viete.jpg', name: 'Viète'},
-			{image: 'nunes.jpg', name: 'Pedro Nunes'},
-			{image: 'cardano.jpg', name: 'Cardano'},
-			{image: 'tartaglia.jpg', name: 'Tartaglia'},
-			{image: 'copernicus.jpg', name: 'Copernicus'},
-			{image: 'leonardo.jpg', name: 'Da Vinci'},
-			{image: 'pacioli.jpg', name: 'Pacioli'},
-			{image: 'regiomontanus.jpg', name: 'Regiomontanus'},
-			{image: 'madhava.jpg', name: 'Madhava'},
-			{image: 'oresme.jpg', name: 'Oresme'},
-			{image: 'shijie.jpg', name: 'Zhu Shijie'},
-			{image: 'yang.jpg', name: 'Yang'},
-			{image: 'jiushao.jpg', name: 'Qin'},
-			{image: 'tusi.jpg', name: 'Al-Din Tusi'},
-			{image: 'li.jpg', name: 'Li Ye'},
-			{image: 'fibonacci.jpg', name: 'Fibonacci'},
-			{image: 'bhaskara-2.jpg', name: 'Bhaskara II'},
-			{image: 'khayyam.jpg', name: 'Khayyam'},
-			{image: 'al-haytham.jpg', name: 'Al-Haytham'},
-			{image: 'thabit.jpg', name: 'Thabit'},
-			{image: 'al-khwarizmi.jpg', name: 'Al-Khwarizmi'},
-			{image: 'brahmagupta.jpg', name: 'Brahmagupta'},
-			{image: 'aryabhata.jpg', name: 'Aryabhata'},
-			{image: 'zu.jpg', name: 'Zu'},
-			{image: 'hypatia.jpg', name: 'Hypatia'},
-			{image: 'liu.jpg', name: 'Liu'},
-			{image: 'diophantus.jpg', name: 'Diophantus'},
-			{image: 'ptolemy.jpg', name: 'Ptolemy'},
-			{image: 'nicomachus.jpg', name: 'Nicomachus'},
-			{image: 'apollonius.jpg', name: 'Apollonius'},
-			{image: 'eratosthenes.jpg', name: 'Eratosthenes'},
-			{image: 'archimedes.jpg', name: 'Archimedes'},
-			{image: 'pingala.jpg', name: 'Pingala'},
-			{image: 'euclid.jpg', name: 'Euclid'},
-			{image: 'aristotle.jpg', name: 'Aristotle'},
-			{image: 'plato.jpg', name: 'Plato'},
-			{image: 'democritus.jpg', name: 'Democritus'},
-			{image: 'zeno.jpg', name: 'Zeno'},
-			{image: 'pythagoras.jpg', name: 'Pythagoras'},
-			{image: 'thales.jpg', name: 'Thales'}
+			_List_fromArray(
+			[
+				{image: 'viazovska.jpg', name: 'Viazovska'},
+				{image: 'avila.jpg', name: 'Avila'},
+				{image: 'mirzakhani.jpg', name: 'Mirzakhani'},
+				{image: 'tao.jpg', name: 'Tao'},
+				{image: 'perelman.jpg', name: 'Perelman'},
+				{image: 'zhang.jpg', name: 'Zhang'},
+				{image: 'daubechies.jpg', name: 'Daubechies'},
+				{image: 'bourgain.jpg', name: 'Bourgain'},
+				{image: 'wiles.jpg', name: 'Wiles'},
+				{image: 'shamir.jpg', name: 'Shamir'},
+				{image: 'yau.jpg', name: 'Yau'},
+				{image: 'matiyasevich.jpg', name: 'Matiyasevich'},
+				{image: 'thurston.jpg', name: 'Thurston'},
+				{image: 'uhlenbeck.jpg', name: 'Uhlenbeck'},
+				{image: 'conway.jpg', name: 'Conway'},
+				{image: 'langlands.jpg', name: 'Langlands'},
+				{image: 'cohen.jpg', name: 'Cohen'},
+				{image: 'easley.jpg', name: 'Easley'},
+				{image: 'appel.jpg', name: 'Appel'},
+				{image: 'penrose.jpg', name: 'Penrose'},
+				{image: 'nash.jpg', name: 'Nash'},
+				{image: 'grothendieck.jpg', name: 'Grothendieck'},
+				{image: 'serre.jpg', name: 'Serre'},
+				{image: 'mandelbrot.jpg', name: 'Mandelbrot'},
+				{image: 'wilkins.jpg', name: 'Wilkins'}
+			]),
+			_List_fromArray(
+			[
+				{image: 'robinson.jpg', name: 'Robinson'},
+				{image: 'blackwell.jpg', name: 'Blackwell'},
+				{image: 'johnson.jpg', name: 'Johnson'},
+				{image: 'lorenz.jpg', name: 'Lorenz'},
+				{image: 'shannon.jpg', name: 'Shannon'},
+				{image: 'gardner.jpg', name: 'Gardner'},
+				{image: 'erdos.jpg', name: 'Erdős'},
+				{image: 'turing.jpg', name: 'Turing'},
+				{image: 'chern.jpg', name: 'Chern'},
+				{image: 'ulam.jpg', name: 'Ulam'},
+				{image: 'weil.jpg', name: 'Weil'},
+				{image: 'godel.jpg', name: 'Gödel'},
+				{image: 'neumann.jpg', name: 'von Neumann'},
+				{image: 'kolmogorov.jpg', name: 'Kolmogorov'},
+				{image: 'cartwright.jpg', name: 'Cartwright'},
+				{image: 'escher.jpg', name: 'Escher'},
+				{image: 'cox.jpg', name: 'Cox'},
+				{image: 'ramanujan.jpg', name: 'Ramanujan'},
+				{image: 'noether.jpg', name: 'Noether'},
+				{image: 'einstein.jpg', name: 'Einstein'},
+				{image: 'hardy.jpg', name: 'Hardy'},
+				{image: 'russell.jpg', name: 'Russell'},
+				{image: 'hilbert.jpg', name: 'Hilbert'},
+				{image: 'peano.jpg', name: 'Peano'},
+				{image: 'poincare.jpg', name: 'Poincaré'}
+			]),
+			_List_fromArray(
+			[
+				{image: 'kovalevskaya.jpg', name: 'Kovalevskaya'},
+				{image: 'cantor.jpg', name: 'Cantor'},
+				{image: 'lie.jpg', name: 'Lie'},
+				{image: 'carroll.jpg', name: 'Carroll'},
+				{image: 'dedekind.jpg', name: 'Dedekind'},
+				{image: 'riemann.jpg', name: 'Riemann'},
+				{image: 'cayley.jpg', name: 'Cayley'},
+				{image: 'nightingale.jpg', name: 'Nightingale'},
+				{image: 'lovelace.jpg', name: 'Lovelace'},
+				{image: 'boole.jpg', name: 'Boole'},
+				{image: 'sylvester.jpg', name: 'Sylvester'},
+				{image: 'galois.jpg', name: 'Galois'},
+				{image: 'jacobi.jpg', name: 'Jacobi'},
+				{image: 'de-morgan.jpg', name: 'De Morgan'},
+				{image: 'hamilton.jpg', name: 'Hamilton'},
+				{image: 'bolyai.jpg', name: 'Bolyai'},
+				{image: 'abel.jpg', name: 'Abel'},
+				{image: 'lobachevsky.jpg', name: 'Lobachevsky'},
+				{image: 'babbage.jpg', name: 'Babbage'},
+				{image: 'mobius.jpg', name: 'Möbius'},
+				{image: 'cauchy.jpg', name: 'Cauchy'},
+				{image: 'somerville.jpg', name: 'Somerville'},
+				{image: 'gauss.jpg', name: 'Gauss'},
+				{image: 'germain.jpg', name: 'Germain'},
+				{image: 'zhenyi.jpg', name: 'Wang'}
+			]),
+			_List_fromArray(
+			[
+				{image: 'fourier.jpg', name: 'Fourier'},
+				{image: 'legendre.jpg', name: 'Legendre'},
+				{image: 'mascheroni.jpg', name: 'Mascheroni'},
+				{image: 'laplace.jpg', name: 'Laplace'},
+				{image: 'monge.jpg', name: 'Monge'},
+				{image: 'lagrange.jpg', name: 'Lagrange'},
+				{image: 'banneker.jpg', name: 'Banneker'},
+				{image: 'lambert.jpg', name: 'Lambert'},
+				{image: 'agnesi.jpg', name: 'Agnesi'},
+				{image: 'euler.jpg', name: 'Euler'},
+				{image: 'chatelet.jpg', name: 'Du Châtelet'},
+				{image: 'bernoulli-2.jpg', name: 'Bernoulli'},
+				{image: 'simson.jpg', name: 'Simson'},
+				{image: 'de-moivre.jpg', name: 'De Moivre'},
+				{image: 'bernoulli-1.jpg', name: 'Bernoulli'},
+				{image: 'leibniz.jpg', name: 'Leibniz'},
+				{image: 'seki.jpg', name: 'Seki'},
+				{image: 'newton.jpg', name: 'Newton'},
+				{image: 'pascal.jpg', name: 'Pascal'},
+				{image: 'wallis.jpg', name: 'Wallis'},
+				{image: 'fermat.jpg', name: 'Fermat'},
+				{image: 'cavalieri.jpg', name: 'Cavalieri'},
+				{image: 'descartes.jpg', name: 'Descartes'},
+				{image: 'desargues.jpg', name: 'Desargues'},
+				{image: 'mersenne.jpg', name: 'Mersenne'}
+			]),
+			_List_fromArray(
+			[
+				{image: 'kepler.jpg', name: 'Kepler'},
+				{image: 'galileo.jpg', name: 'Galileo'},
+				{image: 'napier.jpg', name: 'Napier'},
+				{image: 'stevin.jpg', name: 'Stevin'},
+				{image: 'viete.jpg', name: 'Viète'},
+				{image: 'nunes.jpg', name: 'Pedro Nunes'},
+				{image: 'cardano.jpg', name: 'Cardano'},
+				{image: 'tartaglia.jpg', name: 'Tartaglia'},
+				{image: 'copernicus.jpg', name: 'Copernicus'},
+				{image: 'leonardo.jpg', name: 'Da Vinci'},
+				{image: 'pacioli.jpg', name: 'Pacioli'},
+				{image: 'regiomontanus.jpg', name: 'Regiomontanus'},
+				{image: 'madhava.jpg', name: 'Madhava'},
+				{image: 'oresme.jpg', name: 'Oresme'},
+				{image: 'shijie.jpg', name: 'Zhu Shijie'},
+				{image: 'yang.jpg', name: 'Yang'},
+				{image: 'jiushao.jpg', name: 'Qin'},
+				{image: 'tusi.jpg', name: 'Al-Din Tusi'},
+				{image: 'li.jpg', name: 'Li Ye'},
+				{image: 'fibonacci.jpg', name: 'Fibonacci'},
+				{image: 'bhaskara-2.jpg', name: 'Bhaskara II'},
+				{image: 'khayyam.jpg', name: 'Khayyam'},
+				{image: 'al-haytham.jpg', name: 'Al-Haytham'},
+				{image: 'thabit.jpg', name: 'Thabit'},
+				{image: 'al-khwarizmi.jpg', name: 'Al-Khwarizmi'}
+			])
 		]));
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
+var $author$project$GuessWho$control_buttons = F2(
+	function (game, my_state) {
+		var round_number = function () {
+			var _v0 = game.stage;
+			if (_v0.$ === 'InProgress') {
+				var n = _v0.a;
+				return n;
+			} else {
+				return -1;
+			}
+		}();
+		var num_players = A2($elm$core$Basics$composeR, $author$project$GuessWho$playing_players, $elm$core$List$length)(game);
+		return _List_fromArray(
+			[
+				{
+				disabled: num_players < 2,
+				key: 's',
+				label: 'Start the game',
+				msg: $author$project$Multiplayer$game_message($author$project$GuessWho$StartShufflingCards),
+				show: _Utils_eq(game.stage, $author$project$GuessWho$WaitingToStart) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge)
+			},
+				{disabled: false, key: 'l', label: 'Leave the game', msg: $author$project$Multiplayer$LeaveGame, show: true},
+				{
+				disabled: round_number <= 0,
+				key: 'p',
+				label: 'Previous round',
+				msg: $author$project$Multiplayer$game_message(
+					$author$project$GuessWho$SetRound(round_number - 1)),
+				show: $author$project$GuessWho$is_in_progress(game) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge)
+			},
+				{
+				disabled: _Utils_cmp(
+					round_number,
+					$elm$core$List$length($author$project$GuessWho$round_definitions) - 1) > -1,
+				key: 'n',
+				label: 'Next round',
+				msg: $author$project$Multiplayer$game_message(
+					$author$project$GuessWho$SetRound(round_number + 1)),
+				show: $author$project$GuessWho$is_in_progress(game) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge)
+			}
+			]);
 	});
 var $elm$json$Json$Decode$fail = _Json_fail;
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$GuessWho$decode_card = A2(
-	$elm$json$Json$Decode$andThen,
-	function (name) {
-		var _v0 = $elm$core$List$head(
-			A2(
-				$elm$core$Basics$composeR,
-				$elm$core$Array$toList,
-				$elm$core$List$filter(
-					A2(
-						$elm$core$Basics$composeR,
-						function ($) {
-							return $.name;
-						},
-						$elm$core$Basics$eq(name))))($author$project$GuessWho$card_definitions));
-		if (_v0.$ === 'Just') {
-			var card = _v0.a;
-			return $elm$json$Json$Decode$succeed(card);
-		} else {
-			return $elm$json$Json$Decode$fail('Unrecognised card ' + name);
-		}
-	},
-	$elm$json$Json$Decode$string);
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $elm$core$Debug$log = _Debug_log;
-var $elm$json$Json$Decode$map3 = _Json_map3;
-var $author$project$GuessWho$decode_move = A2(
-	$elm$json$Json$Decode$map,
-	$elm$core$Debug$log('done'),
-	A2(
-		$elm$json$Json$Decode$map,
-		function (msgs) {
-			return _Utils_ap(
-				_List_fromArray(
-					[$author$project$Multiplayer$StartReplay]),
-				_Utils_ap(
-					msgs,
-					_List_fromArray(
-						[$author$project$Multiplayer$EndReplay])));
-		},
-		A2(
-			$elm$json$Json$Decode$andThen,
-			function (action) {
-				var q = A2($elm$core$Debug$log, 'move action', action);
-				switch (action) {
-					case 'shuffle cards':
-						return A3(
-							$elm$json$Json$Decode$map2,
-							function (shown) {
-								return function (chosen) {
-									return _List_fromArray(
-										[
-											$author$project$Multiplayer$OtherGameMsg(
-											A2($author$project$GuessWho$ShuffledCards, shown, chosen))
-										]);
-								};
-							},
-							A2(
-								$elm$json$Json$Decode$field,
-								'shown_cards',
-								$elm$json$Json$Decode$array($author$project$GuessWho$decode_card)),
-							A2(
-								$elm$json$Json$Decode$field,
-								'chosen_cards',
-								$elm$json$Json$Decode$list($author$project$GuessWho$decode_card)));
-					case 'click piece':
-						return A4(
-							$elm$json$Json$Decode$map3,
-							function (id) {
-								return function (col) {
-									return function (row) {
-										return _List_fromArray(
-											[
-												$author$project$Multiplayer$OtherGameMsg(
-												A3($author$project$GuessWho$ClickPiece, id, col, row))
-											]);
-									};
-								};
-							},
-							A2($elm$json$Json$Decode$field, 'player', $elm$json$Json$Decode$string),
-							A2($elm$json$Json$Decode$field, 'col', $elm$json$Json$Decode$int),
-							A2($elm$json$Json$Decode$field, 'row', $elm$json$Json$Decode$int));
-					default:
-						return $elm$json$Json$Decode$succeed(_List_Nil);
-				}
-			},
-			A2($elm$json$Json$Decode$field, 'action', $elm$json$Json$Decode$string))));
-var $author$project$GuessWho$decode_websocket_message = A2(
-	$elm$json$Json$Decode$andThen,
-	function (action) {
-		return $elm$json$Json$Decode$fail('nope');
-	},
-	A2($elm$json$Json$Decode$field, 'action', $elm$json$Json$Decode$string));
-var $author$project$GuessWho$Finished = {$: 'Finished'};
-var $author$project$GuessWho$InProgress = {$: 'InProgress'};
-var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
-var $elm$core$Array$foldl = F3(
-	function (func, baseCase, _v0) {
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var helper = F2(
-			function (node, acc) {
-				if (node.$ === 'SubTree') {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
-				} else {
-					var values = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
-				}
-			});
-		return A3(
-			$elm$core$Elm$JsArray$foldl,
-			func,
-			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
-			tail);
-	});
-var $elm$json$Json$Encode$array = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				$elm$core$Array$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(_Utils_Tuple0),
-				entries));
-	});
-var $elm$core$Basics$not = _Basics_not;
-var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
-var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
-var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
-var $elm$core$Array$tailIndex = function (len) {
-	return (len >>> 5) << 5;
-};
-var $elm$core$Array$indexedMap = F2(
-	function (func, _v0) {
-		var len = _v0.a;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var initialBuilder = {
-			nodeList: _List_Nil,
-			nodeListSize: 0,
-			tail: A3(
-				$elm$core$Elm$JsArray$indexedMap,
-				func,
-				$elm$core$Array$tailIndex(len),
-				tail)
-		};
-		var helper = F2(
-			function (node, builder) {
-				if (node.$ === 'SubTree') {
-					var subTree = node.a;
-					return A3($elm$core$Elm$JsArray$foldl, helper, builder, subTree);
-				} else {
-					var leaf = node.a;
-					var offset = builder.nodeListSize * $elm$core$Array$branchFactor;
-					var mappedLeaf = $elm$core$Array$Leaf(
-						A3($elm$core$Elm$JsArray$indexedMap, func, offset, leaf));
-					return {
-						nodeList: A2($elm$core$List$cons, mappedLeaf, builder.nodeList),
-						nodeListSize: builder.nodeListSize + 1,
-						tail: builder.tail
-					};
-				}
-			});
-		return A2(
-			$elm$core$Array$builderToArray,
-			true,
-			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
-	});
-var $author$project$Grid$update_cell = F3(
-	function (_v0, fn, grid) {
-		var x = _v0.a;
-		var y = _v0.b;
-		var i = (y * grid.width) + x;
-		return _Utils_update(
-			grid,
-			{
-				cells: A2(
-					$elm$core$Array$indexedMap,
-					function (j) {
-						return function (c) {
-							return _Utils_eq(j, i) ? fn(c) : c;
-						};
-					},
-					grid.cells)
-			});
-	});
-var $author$project$GuessWho$click_piece = F3(
-	function (col, row, playerstate) {
-		return _Utils_update(
-			playerstate,
-			{
-				board: A3(
-					$author$project$Grid$update_cell,
-					_Utils_Tuple2(col, row),
-					function (piece) {
-						return _Utils_update(
-							piece,
-							{up: !piece.up});
-					},
-					playerstate.board)
-			});
-	});
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$GuessWho$encode_card = A2(
-	$elm$core$Basics$composeR,
-	function ($) {
-		return $.name;
-	},
-	$elm$json$Json$Encode$string);
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$GuessWho$get_my_state = F2(
-	function (my_id, game) {
-		return A2(
-			$elm$core$Maybe$withDefault,
-			A2($author$project$GuessWho$blank_player, -1, my_id),
-			$elm$core$List$head(
-				A2(
-					$elm$core$List$filter,
-					function (p) {
-						return _Utils_eq(p.id, my_id);
-					},
-					game.players)));
-	});
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $elm$json$Json$Encode$list = F2(
-	function (func, entries) {
-		return _Json_wrap(
-			A3(
-				$elm$core$List$foldl,
-				_Json_addEntry(func),
-				_Json_emptyArray(_Utils_Tuple0),
-				entries));
-	});
-var $author$project$GuessWho$nocmd = function (model) {
-	return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-};
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $elm$core$Dict$foldl = F3(
-	function (func, acc, dict) {
-		foldl:
-		while (true) {
-			if (dict.$ === 'RBEmpty_elm_builtin') {
-				return acc;
-			} else {
-				var key = dict.b;
-				var value = dict.c;
-				var left = dict.d;
-				var right = dict.e;
-				var $temp$func = func,
-					$temp$acc = A3(
-					func,
-					key,
-					value,
-					A3($elm$core$Dict$foldl, func, acc, left)),
-					$temp$dict = right;
-				func = $temp$func;
-				acc = $temp$acc;
-				dict = $temp$dict;
-				continue foldl;
-			}
-		}
-	});
-var $elm$json$Json$Encode$dict = F3(
-	function (toKey, toValue, dictionary) {
-		return _Json_wrap(
-			A3(
-				$elm$core$Dict$foldl,
-				F3(
-					function (key, value, obj) {
-						return A3(
-							_Json_addField,
-							toKey(key),
-							toValue(value),
-							obj);
-					}),
-				_Json_emptyObject(_Utils_Tuple0),
-				dictionary));
-	});
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Dict$Black = {$: 'Black'};
@@ -6001,6 +5671,843 @@ var $elm$core$Dict$fromList = function (assocs) {
 		$elm$core$Dict$empty,
 		assocs);
 };
+var $elm$core$Dict$get = F2(
+	function (targetKey, dict) {
+		get:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var _v1 = A2($elm$core$Basics$compare, targetKey, key);
+				switch (_v1.$) {
+					case 'LT':
+						var $temp$targetKey = targetKey,
+							$temp$dict = left;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+					case 'EQ':
+						return $elm$core$Maybe$Just(value);
+					default:
+						var $temp$targetKey = targetKey,
+							$temp$dict = right;
+						targetKey = $temp$targetKey;
+						dict = $temp$dict;
+						continue get;
+				}
+			}
+		}
+	});
+var $author$project$GuessWho$Observing = {$: 'Observing'};
+var $author$project$GuessWho$blank_player = F2(
+	function (i, id) {
+		return {
+			id: id,
+			role: function () {
+				switch (i) {
+					case 0:
+						return $author$project$GuessWho$InCharge;
+					case 1:
+						return $author$project$GuessWho$Playing;
+					case 2:
+						return $author$project$GuessWho$Playing;
+					default:
+						return $author$project$GuessWho$Observing;
+				}
+			}(),
+			rounds: $elm$core$Array$empty
+		};
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$GuessWho$get_my_state = F2(
+	function (my_id, game) {
+		return A2(
+			$elm$core$Maybe$withDefault,
+			A2($author$project$GuessWho$blank_player, -1, my_id),
+			$elm$core$List$head(
+				A2(
+					$elm$core$List$filter,
+					function (p) {
+						return _Utils_eq(p.id, my_id);
+					},
+					game.players)));
+	});
+var $elm$core$Debug$log = _Debug_log;
+var $elm$core$Basics$not = _Basics_not;
+var $author$project$GuessWho$handle_keypress = function (model) {
+	var _v0 = model.game;
+	if (_v0.$ === 'Just') {
+		var game = _v0.a;
+		var my_state = A2($author$project$GuessWho$get_my_state, model.my_id, game);
+		var buttons = A2($author$project$GuessWho$control_buttons, game, my_state);
+		var keymap = $elm$core$Dict$fromList(
+			A2(
+				$elm$core$List$map,
+				function (b) {
+					return _Utils_Tuple2(b.key, b);
+				},
+				buttons));
+		return A2(
+			$elm$json$Json$Decode$andThen,
+			function (key) {
+				var _v1 = A2($elm$core$Dict$get, key, keymap);
+				if (_v1.$ === 'Just') {
+					var b = _v1.a;
+					return (b.show && (!b.disabled)) ? $elm$json$Json$Decode$succeed(b.msg) : $elm$json$Json$Decode$fail('This key is disabled');
+				} else {
+					return $elm$json$Json$Decode$fail('Unrecognised key ' + key);
+				}
+			},
+			A2(
+				$elm$json$Json$Decode$map,
+				$elm$core$Debug$log('keypress'),
+				A2($elm$json$Json$Decode$field, 'key', $elm$json$Json$Decode$string)));
+	} else {
+		return $elm$json$Json$Decode$fail('');
+	}
+};
+var $elm$browser$Browser$Events$Document = {$: 'Document'};
+var $elm$browser$Browser$Events$MySub = F3(
+	function (a, b, c) {
+		return {$: 'MySub', a: a, b: b, c: c};
+	});
+var $elm$browser$Browser$Events$State = F2(
+	function (subs, pids) {
+		return {pids: pids, subs: subs};
+	});
+var $elm$browser$Browser$Events$init = $elm$core$Task$succeed(
+	A2($elm$browser$Browser$Events$State, _List_Nil, $elm$core$Dict$empty));
+var $elm$browser$Browser$Events$nodeToKey = function (node) {
+	if (node.$ === 'Document') {
+		return 'd_';
+	} else {
+		return 'w_';
+	}
+};
+var $elm$browser$Browser$Events$addKey = function (sub) {
+	var node = sub.a;
+	var name = sub.b;
+	return _Utils_Tuple2(
+		_Utils_ap(
+			$elm$browser$Browser$Events$nodeToKey(node),
+			name),
+		sub);
+};
+var $elm$core$Process$kill = _Scheduler_kill;
+var $elm$core$Dict$foldl = F3(
+	function (func, acc, dict) {
+		foldl:
+		while (true) {
+			if (dict.$ === 'RBEmpty_elm_builtin') {
+				return acc;
+			} else {
+				var key = dict.b;
+				var value = dict.c;
+				var left = dict.d;
+				var right = dict.e;
+				var $temp$func = func,
+					$temp$acc = A3(
+					func,
+					key,
+					value,
+					A3($elm$core$Dict$foldl, func, acc, left)),
+					$temp$dict = right;
+				func = $temp$func;
+				acc = $temp$acc;
+				dict = $temp$dict;
+				continue foldl;
+			}
+		}
+	});
+var $elm$core$Dict$merge = F6(
+	function (leftStep, bothStep, rightStep, leftDict, rightDict, initialResult) {
+		var stepState = F3(
+			function (rKey, rValue, _v0) {
+				stepState:
+				while (true) {
+					var list = _v0.a;
+					var result = _v0.b;
+					if (!list.b) {
+						return _Utils_Tuple2(
+							list,
+							A3(rightStep, rKey, rValue, result));
+					} else {
+						var _v2 = list.a;
+						var lKey = _v2.a;
+						var lValue = _v2.b;
+						var rest = list.b;
+						if (_Utils_cmp(lKey, rKey) < 0) {
+							var $temp$rKey = rKey,
+								$temp$rValue = rValue,
+								$temp$_v0 = _Utils_Tuple2(
+								rest,
+								A3(leftStep, lKey, lValue, result));
+							rKey = $temp$rKey;
+							rValue = $temp$rValue;
+							_v0 = $temp$_v0;
+							continue stepState;
+						} else {
+							if (_Utils_cmp(lKey, rKey) > 0) {
+								return _Utils_Tuple2(
+									list,
+									A3(rightStep, rKey, rValue, result));
+							} else {
+								return _Utils_Tuple2(
+									rest,
+									A4(bothStep, lKey, lValue, rValue, result));
+							}
+						}
+					}
+				}
+			});
+		var _v3 = A3(
+			$elm$core$Dict$foldl,
+			stepState,
+			_Utils_Tuple2(
+				$elm$core$Dict$toList(leftDict),
+				initialResult),
+			rightDict);
+		var leftovers = _v3.a;
+		var intermediateResult = _v3.b;
+		return A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v4, result) {
+					var k = _v4.a;
+					var v = _v4.b;
+					return A3(leftStep, k, v, result);
+				}),
+			intermediateResult,
+			leftovers);
+	});
+var $elm$browser$Browser$Events$Event = F2(
+	function (key, event) {
+		return {event: event, key: key};
+	});
+var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $elm$browser$Browser$Events$spawn = F3(
+	function (router, key, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var actualNode = function () {
+			if (node.$ === 'Document') {
+				return _Browser_doc;
+			} else {
+				return _Browser_window;
+			}
+		}();
+		return A2(
+			$elm$core$Task$map,
+			function (value) {
+				return _Utils_Tuple2(key, value);
+			},
+			A3(
+				_Browser_on,
+				actualNode,
+				name,
+				function (event) {
+					return A2(
+						$elm$core$Platform$sendToSelf,
+						router,
+						A2($elm$browser$Browser$Events$Event, key, event));
+				}));
+	});
+var $elm$core$Dict$union = F2(
+	function (t1, t2) {
+		return A3($elm$core$Dict$foldl, $elm$core$Dict$insert, t2, t1);
+	});
+var $elm$browser$Browser$Events$onEffects = F3(
+	function (router, subs, state) {
+		var stepRight = F3(
+			function (key, sub, _v6) {
+				var deads = _v6.a;
+				var lives = _v6.b;
+				var news = _v6.c;
+				return _Utils_Tuple3(
+					deads,
+					lives,
+					A2(
+						$elm$core$List$cons,
+						A3($elm$browser$Browser$Events$spawn, router, key, sub),
+						news));
+			});
+		var stepLeft = F3(
+			function (_v4, pid, _v5) {
+				var deads = _v5.a;
+				var lives = _v5.b;
+				var news = _v5.c;
+				return _Utils_Tuple3(
+					A2($elm$core$List$cons, pid, deads),
+					lives,
+					news);
+			});
+		var stepBoth = F4(
+			function (key, pid, _v2, _v3) {
+				var deads = _v3.a;
+				var lives = _v3.b;
+				var news = _v3.c;
+				return _Utils_Tuple3(
+					deads,
+					A3($elm$core$Dict$insert, key, pid, lives),
+					news);
+			});
+		var newSubs = A2($elm$core$List$map, $elm$browser$Browser$Events$addKey, subs);
+		var _v0 = A6(
+			$elm$core$Dict$merge,
+			stepLeft,
+			stepBoth,
+			stepRight,
+			state.pids,
+			$elm$core$Dict$fromList(newSubs),
+			_Utils_Tuple3(_List_Nil, $elm$core$Dict$empty, _List_Nil));
+		var deadPids = _v0.a;
+		var livePids = _v0.b;
+		var makeNewPids = _v0.c;
+		return A2(
+			$elm$core$Task$andThen,
+			function (pids) {
+				return $elm$core$Task$succeed(
+					A2(
+						$elm$browser$Browser$Events$State,
+						newSubs,
+						A2(
+							$elm$core$Dict$union,
+							livePids,
+							$elm$core$Dict$fromList(pids))));
+			},
+			A2(
+				$elm$core$Task$andThen,
+				function (_v1) {
+					return $elm$core$Task$sequence(makeNewPids);
+				},
+				$elm$core$Task$sequence(
+					A2($elm$core$List$map, $elm$core$Process$kill, deadPids))));
+	});
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
+		} else {
+			return xs;
+		}
+	});
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
+	});
+var $elm$browser$Browser$Events$onSelfMsg = F3(
+	function (router, _v0, state) {
+		var key = _v0.key;
+		var event = _v0.event;
+		var toMessage = function (_v2) {
+			var subKey = _v2.a;
+			var _v3 = _v2.b;
+			var node = _v3.a;
+			var name = _v3.b;
+			var decoder = _v3.c;
+			return _Utils_eq(subKey, key) ? A2(_Browser_decodeEvent, decoder, event) : $elm$core$Maybe$Nothing;
+		};
+		var messages = A2($elm$core$List$filterMap, toMessage, state.subs);
+		return A2(
+			$elm$core$Task$andThen,
+			function (_v1) {
+				return $elm$core$Task$succeed(state);
+			},
+			$elm$core$Task$sequence(
+				A2(
+					$elm$core$List$map,
+					$elm$core$Platform$sendToApp(router),
+					messages)));
+	});
+var $elm$browser$Browser$Events$subMap = F2(
+	function (func, _v0) {
+		var node = _v0.a;
+		var name = _v0.b;
+		var decoder = _v0.c;
+		return A3(
+			$elm$browser$Browser$Events$MySub,
+			node,
+			name,
+			A2($elm$json$Json$Decode$map, func, decoder));
+	});
+_Platform_effectManagers['Browser.Events'] = _Platform_createManager($elm$browser$Browser$Events$init, $elm$browser$Browser$Events$onEffects, $elm$browser$Browser$Events$onSelfMsg, 0, $elm$browser$Browser$Events$subMap);
+var $elm$browser$Browser$Events$subscription = _Platform_leaf('Browser.Events');
+var $elm$browser$Browser$Events$on = F3(
+	function (node, name, decoder) {
+		return $elm$browser$Browser$Events$subscription(
+			A3($elm$browser$Browser$Events$MySub, node, name, decoder));
+	});
+var $elm$browser$Browser$Events$onKeyUp = A2($elm$browser$Browser$Events$on, $elm$browser$Browser$Events$Document, 'keyup');
+var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $author$project$GuessWho$receiveMessage = _Platform_incomingPort('receiveMessage', $elm$json$Json$Decode$value);
+var $author$project$GuessWho$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$batch(
+		_List_fromArray(
+			[
+				$author$project$GuessWho$receiveMessage($author$project$Multiplayer$WebsocketMessage),
+				$elm$browser$Browser$Events$onKeyUp(
+				$author$project$GuessWho$handle_keypress(model))
+			]));
+};
+var $author$project$GuessWho$blank_game = F3(
+	function (game_id, players, my_index) {
+		return _Utils_Tuple2(
+			{
+				id: game_id,
+				my_index: my_index,
+				players: A2($elm$core$List$indexedMap, $author$project$GuessWho$blank_player, players),
+				replaying: false,
+				stage: $author$project$GuessWho$WaitingToStart
+			},
+			$elm$core$Platform$Cmd$none);
+	});
+var $author$project$GuessWho$ClickPiece = F3(
+	function (a, b, c) {
+		return {$: 'ClickPiece', a: a, b: b, c: c};
+	});
+var $author$project$Multiplayer$EndReplay = {$: 'EndReplay'};
+var $author$project$GuessWho$ShuffledCards = function (a) {
+	return {$: 'ShuffledCards', a: a};
+};
+var $author$project$Multiplayer$StartReplay = {$: 'StartReplay'};
+var $elm$json$Json$Decode$array = _Json_decodeArray;
+var $elm$json$Json$Decode$list = _Json_decodeList;
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $author$project$GuessWho$decode_round_definition = function (card_definitions) {
+	var decode_card = A2(
+		$elm$json$Json$Decode$andThen,
+		function (name) {
+			var _v0 = $elm$core$List$head(
+				A2(
+					$elm$core$Basics$composeR,
+					$elm$core$Array$toList,
+					$elm$core$List$filter(
+						A2(
+							$elm$core$Basics$composeR,
+							function ($) {
+								return $.name;
+							},
+							$elm$core$Basics$eq(name))))(card_definitions));
+			if (_v0.$ === 'Just') {
+				var card = _v0.a;
+				return $elm$json$Json$Decode$succeed(card);
+			} else {
+				return $elm$json$Json$Decode$fail('Unrecognised card ' + name);
+			}
+		},
+		$elm$json$Json$Decode$string);
+	return A3(
+		$elm$json$Json$Decode$map2,
+		$elm$core$Tuple$pair,
+		A2(
+			$elm$json$Json$Decode$field,
+			'shown_cards',
+			$elm$json$Json$Decode$array(decode_card)),
+		A2(
+			$elm$json$Json$Decode$field,
+			'chosen_cards',
+			$elm$json$Json$Decode$list(decode_card)));
+};
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$map3 = _Json_map3;
+var $elm_community$json_extra$Json$Decode$Extra$combine = A2(
+	$elm$core$List$foldr,
+	$elm$json$Json$Decode$map2($elm$core$List$cons),
+	$elm$json$Json$Decode$succeed(_List_Nil));
+var $elm$json$Json$Decode$index = _Json_decodeIndex;
+var $elm_community$json_extra$Json$Decode$Extra$sequence = function (decoders) {
+	return $elm_community$json_extra$Json$Decode$Extra$combine(
+		A2(
+			$elm$core$List$indexedMap,
+			F2(
+				function (idx, dec) {
+					return A2($elm$json$Json$Decode$index, idx, dec);
+				}),
+			decoders));
+};
+var $elm$core$List$singleton = function (value) {
+	return _List_fromArray(
+		[value]);
+};
+var $author$project$GuessWho$decode_move = A2(
+	$elm$json$Json$Decode$map,
+	$elm$core$Debug$log('done'),
+	A2(
+		$elm$json$Json$Decode$map,
+		function (msgs) {
+			return _Utils_ap(
+				_List_fromArray(
+					[$author$project$Multiplayer$StartReplay]),
+				_Utils_ap(
+					msgs,
+					_List_fromArray(
+						[$author$project$Multiplayer$EndReplay])));
+		},
+		A2(
+			$elm$json$Json$Decode$andThen,
+			function (action) {
+				var q = A2($elm$core$Debug$log, 'move action', action);
+				switch (action) {
+					case 'shuffle cards':
+						return A2(
+							$elm$json$Json$Decode$map,
+							function (rounds) {
+								return _List_fromArray(
+									[
+										$author$project$Multiplayer$OtherGameMsg(
+										$author$project$GuessWho$ShuffledCards(rounds))
+									]);
+							},
+							A2(
+								$elm$json$Json$Decode$field,
+								'rounds',
+								$elm_community$json_extra$Json$Decode$Extra$sequence(
+									A2($elm$core$List$map, $author$project$GuessWho$decode_round_definition, $author$project$GuessWho$round_definitions))));
+					case 'set round':
+						return A2(
+							$elm$json$Json$Decode$map,
+							A2(
+								$elm$core$Basics$composeR,
+								$author$project$GuessWho$SetRound,
+								A2($elm$core$Basics$composeR, $author$project$Multiplayer$OtherGameMsg, $elm$core$List$singleton)),
+							A2($elm$json$Json$Decode$field, 'round', $elm$json$Json$Decode$int));
+					case 'click piece':
+						return A4(
+							$elm$json$Json$Decode$map3,
+							function (id) {
+								return function (col) {
+									return function (row) {
+										return _List_fromArray(
+											[
+												$author$project$Multiplayer$OtherGameMsg(
+												A3($author$project$GuessWho$ClickPiece, id, col, row))
+											]);
+									};
+								};
+							},
+							A2($elm$json$Json$Decode$field, 'player', $elm$json$Json$Decode$string),
+							A2($elm$json$Json$Decode$field, 'col', $elm$json$Json$Decode$int),
+							A2($elm$json$Json$Decode$field, 'row', $elm$json$Json$Decode$int));
+					default:
+						return $elm$json$Json$Decode$succeed(_List_Nil);
+				}
+			},
+			A2($elm$json$Json$Decode$field, 'action', $elm$json$Json$Decode$string))));
+var $author$project$GuessWho$decode_websocket_message = A2(
+	$elm$json$Json$Decode$andThen,
+	function (action) {
+		return $elm$json$Json$Decode$fail('nope');
+	},
+	A2($elm$json$Json$Decode$field, 'action', $elm$json$Json$Decode$string));
+var $author$project$GuessWho$Finished = {$: 'Finished'};
+var $author$project$GuessWho$InProgress = function (a) {
+	return {$: 'InProgress', a: a};
+};
+var $author$project$GuessWho$Round = F2(
+	function (board, chosen) {
+		return {board: board, chosen: chosen};
+	});
+var $elm$core$Elm$JsArray$foldl = _JsArray_foldl;
+var $elm$core$Array$foldl = F3(
+	function (func, baseCase, _v0) {
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = F2(
+			function (node, acc) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, acc, subTree);
+				} else {
+					var values = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, func, acc, values);
+				}
+			});
+		return A3(
+			$elm$core$Elm$JsArray$foldl,
+			func,
+			A3($elm$core$Elm$JsArray$foldl, helper, baseCase, tree),
+			tail);
+	});
+var $elm$json$Json$Encode$array = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$Array$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $elm$core$Elm$JsArray$indexedMap = _JsArray_indexedMap;
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var $elm$core$Array$indexedMap = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var initialBuilder = {
+			nodeList: _List_Nil,
+			nodeListSize: 0,
+			tail: A3(
+				$elm$core$Elm$JsArray$indexedMap,
+				func,
+				$elm$core$Array$tailIndex(len),
+				tail)
+		};
+		var helper = F2(
+			function (node, builder) {
+				if (node.$ === 'SubTree') {
+					var subTree = node.a;
+					return A3($elm$core$Elm$JsArray$foldl, helper, builder, subTree);
+				} else {
+					var leaf = node.a;
+					var offset = builder.nodeListSize * $elm$core$Array$branchFactor;
+					var mappedLeaf = $elm$core$Array$Leaf(
+						A3($elm$core$Elm$JsArray$indexedMap, func, offset, leaf));
+					return {
+						nodeList: A2($elm$core$List$cons, mappedLeaf, builder.nodeList),
+						nodeListSize: builder.nodeListSize + 1,
+						tail: builder.tail
+					};
+				}
+			});
+		return A2(
+			$elm$core$Array$builderToArray,
+			true,
+			A3($elm$core$Elm$JsArray$foldl, helper, initialBuilder, tree));
+	});
+var $author$project$Grid$update_cell = F3(
+	function (_v0, fn, grid) {
+		var x = _v0.a;
+		var y = _v0.b;
+		var i = (y * grid.width) + x;
+		return _Utils_update(
+			grid,
+			{
+				cells: A2(
+					$elm$core$Array$indexedMap,
+					function (j) {
+						return function (c) {
+							return _Utils_eq(j, i) ? fn(c) : c;
+						};
+					},
+					grid.cells)
+			});
+	});
+var $author$project$GuessWho$click_piece = F3(
+	function (col, row, round) {
+		return _Utils_update(
+			round,
+			{
+				board: A3(
+					$author$project$Grid$update_cell,
+					_Utils_Tuple2(col, row),
+					function (piece) {
+						return _Utils_update(
+							piece,
+							{up: !piece.up});
+					},
+					round.board)
+			});
+	});
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $author$project$GuessWho$encode_card = A2(
+	$elm$core$Basics$composeR,
+	function ($) {
+		return $.name;
+	},
+	$elm$json$Json$Encode$string);
+var $elm$json$Json$Encode$int = _Json_wrap;
+var $elm$json$Json$Encode$list = F2(
+	function (func, entries) {
+		return _Json_wrap(
+			A3(
+				$elm$core$List$foldl,
+				_Json_addEntry(func),
+				_Json_emptyArray(_Utils_Tuple0),
+				entries));
+	});
+var $author$project$GuessWho$cols = 5;
+var $author$project$GuessWho$make_piece = function (card) {
+	return {card: card, up: true};
+};
+var $elm$core$Elm$JsArray$map = _JsArray_map;
+var $elm$core$Array$map = F2(
+	function (func, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var helper = function (node) {
+			if (node.$ === 'SubTree') {
+				var subTree = node.a;
+				return $elm$core$Array$SubTree(
+					A2($elm$core$Elm$JsArray$map, helper, subTree));
+			} else {
+				var values = node.a;
+				return $elm$core$Array$Leaf(
+					A2($elm$core$Elm$JsArray$map, func, values));
+			}
+		};
+		return A4(
+			$elm$core$Array$Array_elm_builtin,
+			len,
+			startShift,
+			A2($elm$core$Elm$JsArray$map, helper, tree),
+			A2($elm$core$Elm$JsArray$map, func, tail));
+	});
+var $author$project$GuessWho$rows = 5;
+var $author$project$GuessWho$make_board = function (cards) {
+	var pieces = A2($elm$core$Array$map, $author$project$GuessWho$make_piece, cards);
+	return {cells: pieces, height: $author$project$GuessWho$rows, width: $author$project$GuessWho$cols};
+};
+var $author$project$GuessWho$nocmd = function (model) {
+	return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+};
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var $elm$core$Elm$JsArray$push = _JsArray_push;
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
+var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
+var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
+var $elm$core$Array$insertTailInTree = F4(
+	function (shift, index, tail, tree) {
+		var pos = $elm$core$Array$bitMask & (index >>> shift);
+		if (_Utils_cmp(
+			pos,
+			$elm$core$Elm$JsArray$length(tree)) > -1) {
+			if (shift === 5) {
+				return A2(
+					$elm$core$Elm$JsArray$push,
+					$elm$core$Array$Leaf(tail),
+					tree);
+			} else {
+				var newSub = $elm$core$Array$SubTree(
+					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, $elm$core$Elm$JsArray$empty));
+				return A2($elm$core$Elm$JsArray$push, newSub, tree);
+			}
+		} else {
+			var value = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (value.$ === 'SubTree') {
+				var subTree = value.a;
+				var newSub = $elm$core$Array$SubTree(
+					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, subTree));
+				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			} else {
+				var newSub = $elm$core$Array$SubTree(
+					A4(
+						$elm$core$Array$insertTailInTree,
+						shift - $elm$core$Array$shiftStep,
+						index,
+						tail,
+						$elm$core$Elm$JsArray$singleton(value)));
+				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
+			}
+		}
+	});
+var $elm$core$Array$unsafeReplaceTail = F2(
+	function (newTail, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		var originalTailLen = $elm$core$Elm$JsArray$length(tail);
+		var newTailLen = $elm$core$Elm$JsArray$length(newTail);
+		var newArrayLen = len + (newTailLen - originalTailLen);
+		if (_Utils_eq(newTailLen, $elm$core$Array$branchFactor)) {
+			var overflow = _Utils_cmp(newArrayLen >>> $elm$core$Array$shiftStep, 1 << startShift) > 0;
+			if (overflow) {
+				var newShift = startShift + $elm$core$Array$shiftStep;
+				var newTree = A4(
+					$elm$core$Array$insertTailInTree,
+					newShift,
+					len,
+					newTail,
+					$elm$core$Elm$JsArray$singleton(
+						$elm$core$Array$SubTree(tree)));
+				return A4($elm$core$Array$Array_elm_builtin, newArrayLen, newShift, newTree, $elm$core$Elm$JsArray$empty);
+			} else {
+				return A4(
+					$elm$core$Array$Array_elm_builtin,
+					newArrayLen,
+					startShift,
+					A4($elm$core$Array$insertTailInTree, startShift, len, newTail, tree),
+					$elm$core$Elm$JsArray$empty);
+			}
+		} else {
+			return A4($elm$core$Array$Array_elm_builtin, newArrayLen, startShift, tree, newTail);
+		}
+	});
+var $elm$core$Array$push = F2(
+	function (a, array) {
+		var tail = array.d;
+		return A2(
+			$elm$core$Array$unsafeReplaceTail,
+			A2($elm$core$Elm$JsArray$push, a, tail),
+			array);
+	});
+var $elm$json$Json$Encode$dict = F3(
+	function (toKey, toValue, dictionary) {
+		return _Json_wrap(
+			A3(
+				$elm$core$Dict$foldl,
+				F3(
+					function (key, value, obj) {
+						return A3(
+							_Json_addField,
+							toKey(key),
+							toValue(value),
+							obj);
+					}),
+				_Json_emptyObject(_Utils_Tuple0),
+				dictionary));
+	});
 var $author$project$Multiplayer$sendMessage = _Platform_outgoingPort('sendMessage', $elm$core$Basics$identity);
 var $author$project$Multiplayer$send_message = function (action) {
 	return A2(
@@ -6056,22 +6563,6 @@ var $author$project$GuessWho$send_move = F3(
 								]),
 							data)))
 				]));
-	});
-var $elm$random$Random$Generator = function (a) {
-	return {$: 'Generator', a: a};
-};
-var $elm$random$Random$andThen = F2(
-	function (callback, _v0) {
-		var genA = _v0.a;
-		return $elm$random$Random$Generator(
-			function (seed) {
-				var _v1 = genA(seed);
-				var result = _v1.a;
-				var newSeed = _v1.b;
-				var _v2 = callback(result);
-				var genB = _v2.a;
-				return genB(newSeed);
-			});
 	});
 var $elm$random$Random$Generate = function (a) {
 	return {$: 'Generate', a: a};
@@ -6149,6 +6640,9 @@ var $elm$random$Random$onSelfMsg = F3(
 	function (_v0, _v1, seed) {
 		return $elm$core$Task$succeed(seed);
 	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
 var $elm$random$Random$map = F2(
 	function (func, _v0) {
 		var genA = _v0.a;
@@ -6176,7 +6670,19 @@ var $elm$random$Random$generate = F2(
 			$elm$random$Random$Generate(
 				A2($elm$random$Random$map, tagger, generator)));
 	});
-var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$random$Random$andThen = F2(
+	function (callback, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed) {
+				var _v1 = genA(seed);
+				var result = _v1.a;
+				var newSeed = _v1.b;
+				var _v2 = callback(result);
+				var genB = _v2.a;
+				return genB(newSeed);
+			});
+	});
 var $elm$core$Bitwise$xor = _Bitwise_xor;
 var $elm$random$Random$peel = function (_v0) {
 	var state = _v0.a;
@@ -6257,88 +6763,6 @@ var $elm$random$Random$independentSeed = $elm$random$Random$Generator(
 			$elm$random$Random$step,
 			A4($elm$random$Random$map3, makeIndependentSeed, gen, gen, gen),
 			seed0);
-	});
-var $elm$core$Elm$JsArray$push = _JsArray_push;
-var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
-var $elm$core$Basics$ge = _Utils_ge;
-var $elm$core$Elm$JsArray$singleton = _JsArray_singleton;
-var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
-var $elm$core$Elm$JsArray$unsafeSet = _JsArray_unsafeSet;
-var $elm$core$Array$insertTailInTree = F4(
-	function (shift, index, tail, tree) {
-		var pos = $elm$core$Array$bitMask & (index >>> shift);
-		if (_Utils_cmp(
-			pos,
-			$elm$core$Elm$JsArray$length(tree)) > -1) {
-			if (shift === 5) {
-				return A2(
-					$elm$core$Elm$JsArray$push,
-					$elm$core$Array$Leaf(tail),
-					tree);
-			} else {
-				var newSub = $elm$core$Array$SubTree(
-					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, $elm$core$Elm$JsArray$empty));
-				return A2($elm$core$Elm$JsArray$push, newSub, tree);
-			}
-		} else {
-			var value = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
-			if (value.$ === 'SubTree') {
-				var subTree = value.a;
-				var newSub = $elm$core$Array$SubTree(
-					A4($elm$core$Array$insertTailInTree, shift - $elm$core$Array$shiftStep, index, tail, subTree));
-				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
-			} else {
-				var newSub = $elm$core$Array$SubTree(
-					A4(
-						$elm$core$Array$insertTailInTree,
-						shift - $elm$core$Array$shiftStep,
-						index,
-						tail,
-						$elm$core$Elm$JsArray$singleton(value)));
-				return A3($elm$core$Elm$JsArray$unsafeSet, pos, newSub, tree);
-			}
-		}
-	});
-var $elm$core$Array$unsafeReplaceTail = F2(
-	function (newTail, _v0) {
-		var len = _v0.a;
-		var startShift = _v0.b;
-		var tree = _v0.c;
-		var tail = _v0.d;
-		var originalTailLen = $elm$core$Elm$JsArray$length(tail);
-		var newTailLen = $elm$core$Elm$JsArray$length(newTail);
-		var newArrayLen = len + (newTailLen - originalTailLen);
-		if (_Utils_eq(newTailLen, $elm$core$Array$branchFactor)) {
-			var overflow = _Utils_cmp(newArrayLen >>> $elm$core$Array$shiftStep, 1 << startShift) > 0;
-			if (overflow) {
-				var newShift = startShift + $elm$core$Array$shiftStep;
-				var newTree = A4(
-					$elm$core$Array$insertTailInTree,
-					newShift,
-					len,
-					newTail,
-					$elm$core$Elm$JsArray$singleton(
-						$elm$core$Array$SubTree(tree)));
-				return A4($elm$core$Array$Array_elm_builtin, newArrayLen, newShift, newTree, $elm$core$Elm$JsArray$empty);
-			} else {
-				return A4(
-					$elm$core$Array$Array_elm_builtin,
-					newArrayLen,
-					startShift,
-					A4($elm$core$Array$insertTailInTree, startShift, len, newTail, tree),
-					$elm$core$Elm$JsArray$empty);
-			}
-		} else {
-			return A4($elm$core$Array$Array_elm_builtin, newArrayLen, startShift, tree, newTail);
-		}
-	});
-var $elm$core$Array$push = F2(
-	function (a, array) {
-		var tail = array.d;
-		return A2(
-			$elm$core$Array$unsafeReplaceTail,
-			A2($elm$core$Elm$JsArray$push, a, tail),
-			array);
 	});
 var $elm$core$Tuple$second = function (_v0) {
 	var y = _v0.b;
@@ -6632,36 +7056,90 @@ var $elm$core$Array$slice = F3(
 			correctFrom,
 			A2($elm$core$Array$sliceRight, correctTo, array));
 	});
-var $author$project$GuessWho$shuffle_cards = A2(
-	$elm$random$Random$generate,
-	$author$project$Multiplayer$OtherGameMsg,
-	A2(
+var $author$project$GuessWho$shuffle_round = function (card_definitions) {
+	return A2(
 		$elm$random$Random$andThen,
 		function (shuffled) {
 			return A2(
 				$elm$random$Random$map,
-				function (chosen) {
-					return A2($author$project$GuessWho$ShuffledCards, shuffled, chosen);
-				},
+				$elm$core$Tuple$pair(shuffled),
 				$elm_community$random_extra$Random$List$shuffle(
 					$elm$core$Array$toList(shuffled)));
 		},
 		A2(
 			$elm$random$Random$map,
 			A2($elm$core$Array$slice, 0, $author$project$GuessWho$rows * $author$project$GuessWho$cols),
-			$elm_community$random_extra$Random$Array$shuffle($author$project$GuessWho$card_definitions))));
+			$elm_community$random_extra$Random$Array$shuffle(card_definitions)));
+};
+var $elm$random$Random$constant = function (value) {
+	return $elm$random$Random$Generator(
+		function (seed) {
+			return _Utils_Tuple2(value, seed);
+		});
+};
+var $elm$random$Random$map2 = F3(
+	function (func, _v0, _v1) {
+		var genA = _v0.a;
+		var genB = _v1.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v2 = genA(seed0);
+				var a = _v2.a;
+				var seed1 = _v2.b;
+				var _v3 = genB(seed1);
+				var b = _v3.a;
+				var seed2 = _v3.b;
+				return _Utils_Tuple2(
+					A2(func, a, b),
+					seed2);
+			});
+	});
+var $elm_community$random_extra$Random$Extra$sequence = A2(
+	$elm$core$List$foldr,
+	$elm$random$Random$map2($elm$core$List$cons),
+	$elm$random$Random$constant(_List_Nil));
+var $elm_community$random_extra$Random$Extra$traverse = function (f) {
+	return A2(
+		$elm$core$Basics$composeL,
+		$elm_community$random_extra$Random$Extra$sequence,
+		$elm$core$List$map(f));
+};
+var $author$project$GuessWho$shuffle_cards = A2(
+	$elm$random$Random$generate,
+	A2($elm$core$Basics$composeR, $author$project$GuessWho$ShuffledCards, $author$project$Multiplayer$OtherGameMsg),
+	A2($elm_community$random_extra$Random$Extra$traverse, $author$project$GuessWho$shuffle_round, $author$project$GuessWho$round_definitions));
 var $author$project$GuessWho$update_for_player = F3(
 	function (id, fn, game) {
-		return _Utils_update(
-			game,
-			{
-				players: A2(
-					$elm$core$List$map,
-					function (player) {
-						return _Utils_eq(player.id, id) ? fn(player) : player;
-					},
-					game.players)
-			});
+		var _v0 = game.stage;
+		if (_v0.$ === 'InProgress') {
+			var n = _v0.a;
+			var update_round = function (player) {
+				return _Utils_update(
+					player,
+					{
+						rounds: A2(
+							$elm$core$Array$indexedMap,
+							function (r) {
+								return function (round) {
+									return _Utils_eq(r, n) ? fn(round) : round;
+								};
+							},
+							player.rounds)
+					});
+			};
+			return _Utils_update(
+				game,
+				{
+					players: A2(
+						$elm$core$List$map,
+						function (player) {
+							return _Utils_eq(player.id, id) ? update_round(player) : player;
+						},
+						game.players)
+				});
+		} else {
+			return game;
+		}
 	});
 var $author$project$GuessWho$update_game = F3(
 	function (my_id, msg, game) {
@@ -6680,27 +7158,62 @@ var $author$project$GuessWho$update_game = F3(
 						{replaying: false}));
 			case 'OtherGameMsg':
 				switch (msg.a.$) {
-					case 'ShuffledCards':
-						var _v1 = msg.a;
-						var shown_cards = _v1.a;
-						var chosen_cards = _v1.b;
-						var board = $author$project$GuessWho$make_board(shown_cards);
+					case 'SetRound':
+						var n = msg.a.a;
 						return _Utils_Tuple2(
 							_Utils_update(
 								game,
 								{
-									players: A3(
-										$elm$core$List$map2,
-										function (player) {
-											return function (chosen) {
-												return _Utils_update(
-													player,
-													{board: board, chosen: chosen});
-											};
-										},
-										game.players,
-										A2($elm$core$List$map, $elm$core$Maybe$Just, chosen_cards)),
-									stage: $author$project$GuessWho$InProgress
+									stage: $author$project$GuessWho$InProgress(n)
+								}),
+							A3(
+								$author$project$GuessWho$send_move,
+								game,
+								'set round',
+								_List_fromArray(
+									[
+										_Utils_Tuple2(
+										'round',
+										$elm$json$Json$Encode$int(n))
+									])));
+					case 'ShuffledCards':
+						var rounds = msg.a.a;
+						var make_round = function (_v2) {
+							var shown_cards = _v2.a;
+							var chosen_cards = _v2.b;
+							var board = $author$project$GuessWho$make_board(shown_cards);
+							return A2(
+								$elm$core$List$map,
+								A2(
+									$elm$core$Basics$composeR,
+									$elm$core$Maybe$Just,
+									$author$project$GuessWho$Round(board)),
+								chosen_cards);
+						};
+						var handle_round = F2(
+							function (round, players) {
+								return A3(
+									$elm$core$List$map2,
+									function (r) {
+										return function (p) {
+											return _Utils_update(
+												p,
+												{
+													rounds: A2($elm$core$Array$push, r, p.rounds)
+												});
+										};
+									},
+									round,
+									players);
+							});
+						var each_players_rounds = A2($elm$core$List$map, make_round, rounds);
+						var nplayers = A3($elm$core$List$foldl, handle_round, game.players, each_players_rounds);
+						return _Utils_Tuple2(
+							_Utils_update(
+								game,
+								{
+									players: nplayers,
+									stage: $author$project$GuessWho$InProgress(0)
 								}),
 							A3(
 								$author$project$GuessWho$send_move,
@@ -6709,17 +7222,30 @@ var $author$project$GuessWho$update_game = F3(
 								_List_fromArray(
 									[
 										_Utils_Tuple2(
-										'shown_cards',
-										A2($elm$json$Json$Encode$array, $author$project$GuessWho$encode_card, shown_cards)),
-										_Utils_Tuple2(
-										'chosen_cards',
-										A2($elm$json$Json$Encode$list, $author$project$GuessWho$encode_card, chosen_cards))
+										'rounds',
+										A2(
+											$elm$json$Json$Encode$list,
+											function (_v1) {
+												var shown_cards = _v1.a;
+												var chosen_cards = _v1.b;
+												return $elm$json$Json$Encode$object(
+													_List_fromArray(
+														[
+															_Utils_Tuple2(
+															'shown_cards',
+															A2($elm$json$Json$Encode$array, $author$project$GuessWho$encode_card, shown_cards)),
+															_Utils_Tuple2(
+															'chosen_cards',
+															A2($elm$json$Json$Encode$list, $author$project$GuessWho$encode_card, chosen_cards))
+														]));
+											},
+											rounds))
 									])));
 					case 'ClickPiece':
-						var _v2 = msg.a;
-						var player_id = _v2.a;
-						var col = _v2.b;
-						var row = _v2.c;
+						var _v3 = msg.a;
+						var player_id = _v3.a;
+						var col = _v3.b;
+						var row = _v3.c;
 						return _Utils_Tuple2(
 							A3(
 								$author$project$GuessWho$update_for_player,
@@ -6743,7 +7269,7 @@ var $author$project$GuessWho$update_game = F3(
 										$elm$json$Json$Encode$int(row))
 									])));
 					default:
-						var _v3 = msg.a;
+						var _v4 = msg.a;
 						return _Utils_Tuple2(game, $author$project$GuessWho$shuffle_cards);
 				}
 			case 'PlayerJoined':
@@ -6780,14 +7306,10 @@ var $author$project$GuessWho$options = function (model) {
 	};
 };
 var $author$project$Multiplayer$EndGame = {$: 'EndGame'};
-var $author$project$Multiplayer$GameMsg = function (a) {
-	return {$: 'GameMsg', a: a};
-};
 var $author$project$Multiplayer$JoinGame = F4(
 	function (a, b, c, d) {
 		return {$: 'JoinGame', a: a, b: b, c: c, d: d};
 	});
-var $author$project$Multiplayer$LeaveGame = {$: 'LeaveGame'};
 var $author$project$Multiplayer$PlayerJoined = function (a) {
 	return {$: 'PlayerJoined', a: a};
 };
@@ -6862,24 +7384,6 @@ var $author$project$Multiplayer$decode_global_state = A2(
 			'clients',
 			$elm$json$Json$Decode$list($elm$json$Json$Decode$string)),
 		A2($elm$json$Json$Decode$field, 'num_clients', $elm$json$Json$Decode$int)));
-var $elm$core$List$maybeCons = F3(
-	function (f, mx, xs) {
-		var _v0 = f(mx);
-		if (_v0.$ === 'Just') {
-			var x = _v0.a;
-			return A2($elm$core$List$cons, x, xs);
-		} else {
-			return xs;
-		}
-	});
-var $elm$core$List$filterMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			$elm$core$List$maybeCons(f),
-			_List_Nil,
-			xs);
-	});
 var $author$project$Multiplayer$get_global_stats = A2($author$project$Multiplayer$send_message, 'global_stats', _List_Nil);
 var $elm$core$Platform$Cmd$map = _Platform_map;
 var $elm$json$Json$Decode$map4 = _Json_map4;
@@ -6894,10 +7398,6 @@ var $elm$json$Json$Decode$maybe = function (decoder) {
 };
 var $author$project$Multiplayer$nocmd = function (model) {
 	return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-};
-var $elm$core$List$singleton = function (value) {
-	return _List_fromArray(
-		[value]);
 };
 var $author$project$Multiplayer$apply_websocket_message = F3(
 	function (options, encoded_data, model) {
@@ -6972,7 +7472,7 @@ var $author$project$Multiplayer$apply_websocket_message = F3(
 								[standard, specific])));
 				};
 			},
-			$elm$json$Json$Decode$maybe(standard_actions),
+			A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, standard_actions),
 			A2(
 				$elm$core$Basics$composeR,
 				$elm$json$Json$Decode$map(
@@ -7365,7 +7865,6 @@ var $author$project$GuessWho$lobby = function (model) {
 				}())
 			]));
 };
-var $author$project$GuessWho$StartShufflingCards = {$: 'StartShufflingCards'};
 var $elm$html$Html$Attributes$classList = function (classes) {
 	return $elm$html$Html$Attributes$class(
 		A2(
@@ -7376,18 +7875,60 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $author$project$GuessWho$fi = $elm$core$String$fromInt;
-var $author$project$Multiplayer$game_message = A2($elm$core$Basics$composeR, $author$project$Multiplayer$OtherGameMsg, $author$project$Multiplayer$GameMsg);
+var $elm$core$Array$length = function (_v0) {
+	var len = _v0.a;
+	return len;
+};
 var $elm$html$Html$main_ = _VirtualDom_node('main');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
-var $elm$core$Basics$neq = _Utils_notEqual;
-var $author$project$GuessWho$is_player = function (p) {
-	return _Utils_eq(p.role, $author$project$GuessWho$Playing);
+var $author$project$GuessWho$blank_round = {
+	board: $author$project$GuessWho$make_board($elm$core$Array$empty),
+	chosen: $elm$core$Maybe$Nothing
 };
-var $author$project$GuessWho$playing_players = function (game) {
-	return A2($elm$core$List$filter, $author$project$GuessWho$is_player, game.players);
-};
+var $elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = $elm$core$Array$bitMask & (index >>> shift);
+			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_v0.$ === 'SubTree') {
+				var subTree = _v0.a;
+				var $temp$shift = shift - $elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _v0.a;
+				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var $elm$core$Array$get = F2(
+	function (index, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
+			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
+			A3($elm$core$Array$getHelp, startShift, index, tree)));
+	});
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
 		return A2(
@@ -7454,8 +7995,8 @@ var $author$project$GuessWho$view_card = function (card) {
 					]))
 			]));
 };
-var $author$project$GuessWho$view_board = F2(
-	function (my_state, player) {
+var $author$project$GuessWho$view_board = F3(
+	function (round, my_state, player) {
 		var is_me = _Utils_eq(my_state.id, player.id);
 		var view_piece = F3(
 			function (col, row, piece) {
@@ -7486,7 +8027,7 @@ var $author$project$GuessWho$view_board = F2(
 							$author$project$GuessWho$view_card(piece.card)
 						]));
 			});
-		var board = player.board;
+		var board = round.board;
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7512,8 +8053,8 @@ var $author$project$GuessWho$view_board = F2(
 						},
 						board))));
 	});
-var $author$project$GuessWho$view_chosen_card = F2(
-	function (my_state, player) {
+var $author$project$GuessWho$view_chosen_card = F3(
+	function (round, my_state, player) {
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7523,7 +8064,7 @@ var $author$project$GuessWho$view_chosen_card = F2(
 			_List_fromArray(
 				[
 					function () {
-					var _v0 = player.chosen;
+					var _v0 = round.chosen;
 					if (_v0.$ === 'Nothing') {
 						return A2($elm$html$Html$div, _List_Nil, _List_Nil);
 					} else {
@@ -7533,8 +8074,12 @@ var $author$project$GuessWho$view_chosen_card = F2(
 				}()
 				]));
 	});
-var $author$project$GuessWho$view_player = F3(
-	function (my_state, index, state) {
+var $author$project$GuessWho$view_player = F4(
+	function (round_number, my_state, index, state) {
+		var round = A2(
+			$elm$core$Maybe$withDefault,
+			$author$project$GuessWho$blank_round,
+			A2($elm$core$Array$get, round_number, state.rounds));
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7544,12 +8089,12 @@ var $author$project$GuessWho$view_player = F3(
 				]),
 			_List_fromArray(
 				[
-					A2($author$project$GuessWho$view_chosen_card, my_state, state),
-					A2($author$project$GuessWho$view_board, my_state, state)
+					A3($author$project$GuessWho$view_chosen_card, round, my_state, state),
+					A3($author$project$GuessWho$view_board, round, my_state, state)
 				]));
 	});
-var $author$project$GuessWho$view_boards = F2(
-	function (my_state, game) {
+var $author$project$GuessWho$view_boards = F3(
+	function (round_number, my_state, game) {
 		var _v0 = my_state.role;
 		if (_v0.$ === 'Playing') {
 			return A2(
@@ -7560,7 +8105,7 @@ var $author$project$GuessWho$view_boards = F2(
 					]),
 				_List_fromArray(
 					[
-						A3($author$project$GuessWho$view_player, my_state, game.my_index - 1, my_state)
+						A4($author$project$GuessWho$view_player, round_number, my_state, game.my_index - 1, my_state)
 					]));
 		} else {
 			return A2(
@@ -7571,13 +8116,13 @@ var $author$project$GuessWho$view_boards = F2(
 					]),
 				A2(
 					$elm$core$List$indexedMap,
-					$author$project$GuessWho$view_player(my_state),
+					A2($author$project$GuessWho$view_player, round_number, my_state),
 					$author$project$GuessWho$playing_players(game)));
 		}
 	});
 var $author$project$GuessWho$view_game = F2(
 	function (my_id, game) {
-		var n = A2($elm$core$Basics$composeR, $author$project$GuessWho$playing_players, $elm$core$List$length)(game);
+		var num_players = A2($elm$core$Basics$composeR, $author$project$GuessWho$playing_players, $elm$core$List$length)(game);
 		var my_state = A2($author$project$GuessWho$get_my_state, my_id, game);
 		var main_view = function () {
 			var _v0 = game.stage;
@@ -7608,7 +8153,7 @@ var $author$project$GuessWho$view_game = F2(
 								_List_fromArray(
 									[
 										$elm$html$Html$text(
-										$author$project$GuessWho$fi(n) + (' ' + A3($author$project$Util$pluralise, n, 'player', 'players')))
+										$author$project$GuessWho$fi(num_players) + (' ' + A3($author$project$Util$pluralise, num_players, 'player', 'players')))
 									])),
 								A2(
 								$elm$html$Html$ul,
@@ -7628,7 +8173,8 @@ var $author$project$GuessWho$view_game = F2(
 									game.players))
 							]));
 				case 'InProgress':
-					return A2($author$project$GuessWho$view_boards, my_state, game);
+					var round = _v0.a;
+					return A3($author$project$GuessWho$view_boards, round, my_state, game);
 				default:
 					return A2(
 						$elm$html$Html$div,
@@ -7641,11 +8187,57 @@ var $author$project$GuessWho$view_game = F2(
 								_List_fromArray(
 									[
 										$elm$html$Html$text('The game is finished')
-									])),
-								A2($author$project$GuessWho$view_boards, my_state, game)
+									]))
 							]));
 			}
 		}();
+		var debugging = A2(
+			$elm$html$Html$ul,
+			_List_Nil,
+			A2(
+				$elm$core$List$map,
+				function (p) {
+					return A2(
+						$elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$p,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(p.id)
+									])),
+								A2(
+								$elm$html$Html$p,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(
+										$author$project$GuessWho$fi(
+											$elm$core$Array$length(p.rounds)))
+									])),
+								A2(
+								$elm$html$Html$ul,
+								_List_Nil,
+								A2(
+									$elm$core$List$map,
+									A2(
+										$elm$core$Basics$composeR,
+										function ($) {
+											return $.chosen;
+										},
+										A2(
+											$elm$core$Basics$composeR,
+											$elm$core$Maybe$withDefault(
+												{image: '', name: ''}),
+											$author$project$GuessWho$view_card)),
+									$elm$core$Array$toList(p.rounds)))
+							]));
+				},
+				game.players));
+		var buttons = A2($author$project$GuessWho$control_buttons, game, my_state);
 		var controls = A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -7656,33 +8248,30 @@ var $author$project$GuessWho$view_game = F2(
 							_Utils_Tuple2('controls', true),
 							_Utils_Tuple2(
 							'always-visible',
-							!_Utils_eq(game.stage, $author$project$GuessWho$InProgress))
+							!$author$project$GuessWho$is_in_progress(game))
 						]))
 				]),
-			_List_fromArray(
-				[
-					(_Utils_eq(game.stage, $author$project$GuessWho$WaitingToStart) && ((n >= 2) && _Utils_eq(my_state.role, $author$project$GuessWho$InCharge))) ? A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Events$onClick(
-							$author$project$Multiplayer$game_message($author$project$GuessWho$StartShufflingCards))
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Start the game')
-						])) : A2($elm$html$Html$div, _List_Nil, _List_Nil),
-					A2(
-					$elm$html$Html$button,
-					_List_fromArray(
-						[
-							$elm$html$Html$Events$onClick($author$project$Multiplayer$LeaveGame)
-						]),
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Leave the game')
-						]))
-				]));
+			A2(
+				$elm$core$List$map,
+				function (b) {
+					return A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(b.msg),
+								$elm$html$Html$Attributes$disabled(b.disabled)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(b.label)
+							]));
+				},
+				A2(
+					$elm$core$List$filter,
+					function ($) {
+						return $.show;
+					},
+					buttons)));
 		return A2(
 			$elm$html$Html$main_,
 			_List_Nil,

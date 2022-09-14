@@ -141,7 +141,7 @@ apply_websocket_message options encoded_data model =
         decode_websocket_message =
             JD.map2
                 (\standard -> \specific -> List.filterMap identity [standard, specific] |> List.concat)
-                (JD.maybe standard_actions)
+                (JD.map Just standard_actions)
                 ((JD.map (List.map GameMsg) >> JD.maybe) options.decode_websocket_message)
     in
         case JD.decodeValue decode_websocket_message encoded_data of
