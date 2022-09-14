@@ -1,7 +1,11 @@
+@import "fonts/Concrete/cmun-concrete.css";
+@import "fonts/Sans/cmun-sans.css";
+
 body {
     background: black;
     color: white;
     margin: 0;
+    font-family: 'Computer Modern Concrete';
 }
 
 main {
@@ -19,12 +23,66 @@ main {
     justify-items: center;
 }
 .container.both {
-    grid-template-columns: 1fr 1fr;
+    grid-template: "player-0 info-card player-1" / 1fr 20em 1fr;
 }
+
+
+.info-card {
+    grid-area: info-card;
+    padding: 1em;
+    background: white;
+    color: black;
+    align-self: start;
+    margin: 1em;
+    display: grid;
+    grid-template: 
+        "image"
+        "name"
+        "description"
+    ;
+    grid-gap: 1em;
+    border-radius: 2em;
+}
+.info-card.hidden {
+    display: none;
+}
+
+.info-card > h1 {
+    grid-area: name;
+    margin: 0;
+    text-align: center;
+    font-size: 1.3em;
+}
+.info-card > h1 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.info-card > img {
+    grid-area: image;
+    height: 15em;
+    width: 100%;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 1em 1em 0 0;
+}
+.info-card .description {
+    grid-area: description;
+    margin: 0;
+    font-family: 'Computer Modern Sans';
+}
+
+.info-card .description p:first-child {
+    margin-top: 0;
+}
+.info-card .description p:last-child {
+    margin-bottom: 0;
+}
+
 
 .player {
     --card-hue: 240;
-    font-size: 1vmin;
+    font-size: 0.55vw;
     display: grid;
     grid-gap: 1em;
     grid-template-columns: auto auto;
@@ -38,9 +96,11 @@ main {
 
 .player.player-0 {
     --card-hue: 240;
+    grid-area: player-0;
 }
 .player.player-1 {
     --card-hue: 120;
+    grid-area: player-1;
 }
 
 .board {
@@ -96,7 +156,6 @@ main {
     width: 100%;
     height: 100%;
     color: black;
-    font-family: sans-serif;
     font-weight: bold;
     display: grid;
     align-content: center;

@@ -35,7 +35,10 @@ type alias Image = String
 
 type alias Card =
     { image : Image
-    , name : String
+    , short_name : String
+    , full_name : String
+    , url : String
+    , description : List String
     }
 
 type alias Piece =
@@ -73,6 +76,7 @@ type alias Game =
     , stage : GameStage
     , replaying : Bool
     , show_chosen_cards : Bool
+    , info_card : Maybe Card
     }
 
 type alias Model = MultiplayerGame Game
@@ -83,6 +87,7 @@ type GameMsg
     | ShuffledCards (List (Array Card, List Card))
     | SetRound Int
     | ShowChosenCards Bool
+    | HoverCard Card
 
 type alias MetaGameMsg = Multiplayer.GameMsg GameMsg
 
@@ -94,139 +99,139 @@ cols = 5
 round_definitions : List (Array Card)
 round_definitions = List.map Array.fromList
     [
-        [ { image = "viazovska.jpg", name = "Viazovska" }
-        , { image = "avila.jpg", name = "Avila" }
-        , { image = "mirzakhani.jpg", name = "Mirzakhani" }
-        , { image = "tao.jpg", name = "Tao" }
-        , { image = "perelman.jpg", name = "Perelman" }
-        , { image = "zhang.jpg", name = "Zhang" }
-        , { image = "daubechies.jpg", name = "Daubechies" }
-        , { image = "bourgain.jpg", name = "Bourgain" }
-        , { image = "wiles.jpg", name = "Wiles" }
-        , { image = "shamir.jpg", name = "Shamir" }
-        , { image = "yau.jpg", name = "Yau" }
-        , { image = "matiyasevich.jpg", name = "Matiyasevich" }
-        , { image = "thurston.jpg", name = "Thurston" }
-        , { image = "uhlenbeck.jpg", name = "Uhlenbeck" }
-        , { image = "conway.jpg", name = "Conway" }
-        , { image = "langlands.jpg", name = "Langlands" }
-        , { image = "cohen.jpg", name = "Cohen" }
-        , { image = "easley.jpg", name = "Easley" }
-        , { image = "appel.jpg", name = "Appel" }
-        , { image = "penrose.jpg", name = "Penrose" }
-        , { image = "nash.jpg", name = "Nash" }
-        , { image = "grothendieck.jpg", name = "Grothendieck" }
-        , { image = "serre.jpg", name = "Serre" }
-        , { image = "mandelbrot.jpg", name = "Mandelbrot" }
-        , { image = "wilkins.jpg", name = "Wilkins" }
+        [ { image = "viazovska.jpg", full_name = "Maryna Viazovska", short_name = "Viazovska", url = "https://en.wikipedia.org/wiki/Maryna_Viazovska", description = [ "Maryna Sergiivna Viazovska is a Ukrainian mathematician known for her work in sphere packing.", "She is full professor and Chair of Number Theory at the Institute of Mathematics of the École Polytechnique Fédérale de Lausanne in Switzerland.", "She was awarded the Fields Medal in 2022."] }
+        , { image = "avila.jpg", full_name = "Artur Avila", short_name = "Avila", url = "", description = [] }
+        , { image = "mirzakhani.jpg", full_name = "Maryam Mirzakhani", short_name = "Mirzakhani", url = "", description = [] }
+        , { image = "tao.jpg", full_name = "Terence Tao", short_name = "Tao", url = "", description = [] }
+        , { image = "perelman.jpg", full_name = "Grigory Perelman", short_name = "Perelman", url = "", description = [] }
+        , { image = "zhang.jpg", full_name = "Yitang Zhang", short_name = "Zhang", url = "", description = [] }
+        , { image = "daubechies.jpg", full_name = "Ingrid Daubechies", short_name = "Daubechies", url = "", description = [] }
+        , { image = "bourgain.jpg", full_name = "Jean Bourgain", short_name = "Bourgain", url = "", description = [] }
+        , { image = "wiles.jpg", full_name = "Andrew Wiles", short_name = "Wiles", url = "", description = [] }
+        , { image = "shamir.jpg", full_name = "Adi Shamir", short_name = "Shamir", url = "", description = [] }
+        , { image = "yau.jpg", full_name = "Shing-Tung Yau", short_name = "Yau", url = "", description = [] }
+        , { image = "matiyasevich.jpg", full_name = "Yuri Matiyasevich", short_name = "Matiyasevich", url = "", description = [] }
+        , { image = "thurston.jpg", full_name = "William Thurston", short_name = "Thurston", url = "", description = [] }
+        , { image = "uhlenbeck.jpg", full_name = "Karen Uhlenbeck", short_name = "Uhlenbeck", url = "", description = [] }
+        , { image = "conway.jpg", full_name = "John H. Conway", short_name = "Conway", url = "", description = [] }
+        , { image = "langlands.jpg", full_name = "Robert Langlands", short_name = "Langlands", url = "", description = [] }
+        , { image = "cohen.jpg", full_name = "Paul Cohen", short_name = "Cohen", url = "", description = [] }
+        , { image = "easley.jpg", full_name = "Annie Easley", short_name = "Easley", url = "", description = [] }
+        , { image = "appel.jpg", full_name = "Kenneth Appel", short_name = "Appel", url = "", description = [] }
+        , { image = "penrose.jpg", full_name = "Roger Penrose", short_name = "Penrose", url = "", description = [] }
+        , { image = "nash.jpg", full_name = "John Nash", short_name = "Nash", url = "", description = [] }
+        , { image = "grothendieck.jpg", full_name = "Alexandre Grothendieck", short_name = "Grothendieck", url = "", description = [] }
+        , { image = "serre.jpg", full_name = "Jean-Pierre Serre", short_name = "Serre", url = "", description = [] }
+        , { image = "mandelbrot.jpg", full_name = "Benoit Mandelbrot", short_name = "Mandelbrot", url = "", description = [] }
+        , { image = "wilkins.jpg", full_name = "J. Ernest Wilkins Jr.", short_name = "Wilkins", url = "", description = [] }
         ]
     ,
-        [ { image = "robinson.jpg", name = "Robinson" }
-        , { image = "blackwell.jpg", name = "Blackwell" }
-        , { image = "johnson.jpg", name = "Johnson" }
-        , { image = "lorenz.jpg", name = "Lorenz" }
-        , { image = "shannon.jpg", name = "Shannon" }
-        , { image = "gardner.jpg", name = "Gardner" }
-        , { image = "erdos.jpg", name = "Erdős" }
-        , { image = "turing.jpg", name = "Turing" }
-        , { image = "chern.jpg", name = "Chern" }
-        , { image = "ulam.jpg", name = "Ulam" }
-        , { image = "weil.jpg", name = "Weil" }
-        , { image = "godel.jpg", name = "Gödel" }
-        , { image = "neumann.jpg", name = "von Neumann" }
-        , { image = "kolmogorov.jpg", name = "Kolmogorov" }
-        , { image = "cartwright.jpg", name = "Cartwright" }
-        , { image = "escher.jpg", name = "Escher" }
-        , { image = "cox.jpg", name = "Cox" }
-        , { image = "ramanujan.jpg", name = "Ramanujan" }
-        , { image = "noether.jpg", name = "Noether" }
-        , { image = "einstein.jpg", name = "Einstein" }
-        , { image = "hardy.jpg", name = "Hardy" }
-        , { image = "russell.jpg", name = "Russell" }
-        , { image = "hilbert.jpg", name = "Hilbert" }
-        , { image = "peano.jpg", name = "Peano" }
-        , { image = "poincare.jpg", name = "Poincaré" }
+        [ { image = "robinson.jpg", full_name = "", short_name = "Robinson", url = "", description = [] }
+        , { image = "blackwell.jpg", full_name = "", short_name = "Blackwell", url = "", description = [] }
+        , { image = "johnson.jpg", full_name = "", short_name = "Johnson", url = "", description = [] }
+        , { image = "lorenz.jpg", full_name = "", short_name = "Lorenz", url = "", description = [] }
+        , { image = "shannon.jpg", full_name = "", short_name = "Shannon", url = "", description = [] }
+        , { image = "gardner.jpg", full_name = "", short_name = "Gardner", url = "", description = [] }
+        , { image = "erdos.jpg", full_name = "", short_name = "Erdős", url = "", description = [] }
+        , { image = "turing.jpg", full_name = "", short_name = "Turing", url = "", description = [] }
+        , { image = "chern.jpg", full_name = "", short_name = "Chern", url = "", description = [] }
+        , { image = "ulam.jpg", full_name = "", short_name = "Ulam", url = "", description = [] }
+        , { image = "weil.jpg", full_name = "", short_name = "Weil", url = "", description = [] }
+        , { image = "godel.jpg", full_name = "", short_name = "Gödel", url = "", description = [] }
+        , { image = "neumann.jpg", full_name = "", short_name = "von Neumann", url = "", description = [] }
+        , { image = "kolmogorov.jpg", full_name = "", short_name = "Kolmogorov", url = "", description = [] }
+        , { image = "cartwright.jpg", full_name = "", short_name = "Cartwright", url = "", description = [] }
+        , { image = "escher.jpg", full_name = "", short_name = "Escher", url = "", description = [] }
+        , { image = "cox.jpg", full_name = "", short_name = "Cox", url = "", description = [] }
+        , { image = "ramanujan.jpg", full_name = "", short_name = "Ramanujan", url = "", description = [] }
+        , { image = "noether.jpg", full_name = "", short_name = "Noether", url = "", description = [] }
+        , { image = "einstein.jpg", full_name = "", short_name = "Einstein", url = "", description = [] }
+        , { image = "hardy.jpg", full_name = "", short_name = "Hardy", url = "", description = [] }
+        , { image = "russell.jpg", full_name = "", short_name = "Russell", url = "", description = [] }
+        , { image = "hilbert.jpg", full_name = "", short_name = "Hilbert", url = "", description = [] }
+        , { image = "peano.jpg", full_name = "", short_name = "Peano", url = "", description = [] }
+        , { image = "poincare.jpg", full_name = "", short_name = "Poincaré", url = "", description = [] }
         ]
     ,
-        [ { image = "kovalevskaya.jpg", name = "Kovalevskaya" }
-        , { image = "cantor.jpg", name = "Cantor" }
-        , { image = "lie.jpg", name = "Lie" }
-        , { image = "carroll.jpg", name = "Carroll" }
-        , { image = "dedekind.jpg", name = "Dedekind" }
-        , { image = "riemann.jpg", name = "Riemann" }
-        , { image = "cayley.jpg", name = "Cayley" }
-        , { image = "nightingale.jpg", name = "Nightingale" }
-        , { image = "lovelace.jpg", name = "Lovelace" }
-        , { image = "boole.jpg", name = "Boole" }
-        , { image = "sylvester.jpg", name = "Sylvester" }
-        , { image = "galois.jpg", name = "Galois" }
-        , { image = "jacobi.jpg", name = "Jacobi" }
-        , { image = "de-morgan.jpg", name = "De Morgan" }
-        , { image = "hamilton.jpg", name = "Hamilton" }
-        , { image = "bolyai.jpg", name = "Bolyai" }
-        , { image = "abel.jpg", name = "Abel" }
-        , { image = "lobachevsky.jpg", name = "Lobachevsky" }
-        , { image = "babbage.jpg", name = "Babbage" }
-        , { image = "mobius.jpg", name = "Möbius" }
-        , { image = "cauchy.jpg", name = "Cauchy" }
-        , { image = "somerville.jpg", name = "Somerville" }
-        , { image = "gauss.jpg", name = "Gauss" }
-        , { image = "germain.jpg", name = "Germain" }
-        , { image = "zhenyi.jpg", name = "Wang" }
+        [ { image = "kovalevskaya.jpg", full_name = "", short_name = "Kovalevskaya", url = "", description = [] }
+        , { image = "cantor.jpg", full_name = "", short_name = "Cantor", url = "", description = [] }
+        , { image = "lie.jpg", full_name = "", short_name = "Lie", url = "", description = [] }
+        , { image = "carroll.jpg", full_name = "", short_name = "Carroll", url = "", description = [] }
+        , { image = "dedekind.jpg", full_name = "", short_name = "Dedekind", url = "", description = [] }
+        , { image = "riemann.jpg", full_name = "", short_name = "Riemann", url = "", description = [] }
+        , { image = "cayley.jpg", full_name = "", short_name = "Cayley", url = "", description = [] }
+        , { image = "nightingale.jpg", full_name = "", short_name = "Nightingale", url = "", description = [] }
+        , { image = "lovelace.jpg", full_name = "", short_name = "Lovelace", url = "", description = [] }
+        , { image = "boole.jpg", full_name = "", short_name = "Boole", url = "", description = [] }
+        , { image = "sylvester.jpg", full_name = "", short_name = "Sylvester", url = "", description = [] }
+        , { image = "galois.jpg", full_name = "", short_name = "Galois", url = "", description = [] }
+        , { image = "jacobi.jpg", full_name = "", short_name = "Jacobi", url = "", description = [] }
+        , { image = "de-morgan.jpg", full_name = "", short_name = "De Morgan", url = "", description = [] }
+        , { image = "hamilton.jpg", full_name = "", short_name = "Hamilton", url = "", description = [] }
+        , { image = "bolyai.jpg", full_name = "", short_name = "Bolyai", url = "", description = [] }
+        , { image = "abel.jpg", full_name = "", short_name = "Abel", url = "", description = [] }
+        , { image = "lobachevsky.jpg", full_name = "", short_name = "Lobachevsky", url = "", description = [] }
+        , { image = "babbage.jpg", full_name = "", short_name = "Babbage", url = "", description = [] }
+        , { image = "mobius.jpg", full_name = "", short_name = "Möbius", url = "", description = [] }
+        , { image = "cauchy.jpg", full_name = "", short_name = "Cauchy", url = "", description = [] }
+        , { image = "somerville.jpg", full_name = "", short_name = "Somerville", url = "", description = [] }
+        , { image = "gauss.jpg", full_name = "", short_name = "Gauss", url = "", description = [] }
+        , { image = "germain.jpg", full_name = "", short_name = "Germain", url = "", description = [] }
+        , { image = "zhenyi.jpg", full_name = "", short_name = "Wang", url = "", description = [] }
         ]
     ,
-        [ { image = "fourier.jpg", name = "Fourier" }
-        , { image = "legendre.jpg", name = "Legendre" }
-        , { image = "mascheroni.jpg", name = "Mascheroni" }
-        , { image = "laplace.jpg", name = "Laplace" }
-        , { image = "monge.jpg", name = "Monge" }
-        , { image = "lagrange.jpg", name = "Lagrange" }
-        , { image = "banneker.jpg", name = "Banneker" }
-        , { image = "lambert.jpg", name = "Lambert" }
-        , { image = "agnesi.jpg", name = "Agnesi" }
-        , { image = "euler.jpg", name = "Euler" }
-        , { image = "chatelet.jpg", name = "Du Châtelet" }
-        , { image = "bernoulli-2.jpg", name = "Bernoulli" }
-        , { image = "simson.jpg", name = "Simson" }
-        , { image = "de-moivre.jpg", name = "De Moivre" }
-        , { image = "bernoulli-1.jpg", name = "Bernoulli" }
-        , { image = "leibniz.jpg", name = "Leibniz" }
-        , { image = "seki.jpg", name = "Seki" }
-        , { image = "newton.jpg", name = "Newton" }
-        , { image = "pascal.jpg", name = "Pascal" }
-        , { image = "wallis.jpg", name = "Wallis" }
-        , { image = "fermat.jpg", name = "Fermat" }
-        , { image = "cavalieri.jpg", name = "Cavalieri" }
-        , { image = "descartes.jpg", name = "Descartes" }
-        , { image = "desargues.jpg", name = "Desargues" }
-        , { image = "mersenne.jpg", name = "Mersenne" }
+        [ { image = "fourier.jpg", full_name = "", short_name = "Fourier", url = "", description = [] }
+        , { image = "legendre.jpg", full_name = "", short_name = "Legendre", url = "", description = [] }
+        , { image = "mascheroni.jpg", full_name = "", short_name = "Mascheroni", url = "", description = [] }
+        , { image = "laplace.jpg", full_name = "", short_name = "Laplace", url = "", description = [] }
+        , { image = "monge.jpg", full_name = "", short_name = "Monge", url = "", description = [] }
+        , { image = "lagrange.jpg", full_name = "", short_name = "Lagrange", url = "", description = [] }
+        , { image = "banneker.jpg", full_name = "", short_name = "Banneker", url = "", description = [] }
+        , { image = "lambert.jpg", full_name = "", short_name = "Lambert", url = "", description = [] }
+        , { image = "agnesi.jpg", full_name = "", short_name = "Agnesi", url = "", description = [] }
+        , { image = "euler.jpg", full_name = "", short_name = "Euler", url = "", description = [] }
+        , { image = "chatelet.jpg", full_name = "", short_name = "Du Châtelet", url = "", description = [] }
+        , { image = "bernoulli-2.jpg", full_name = "", short_name = "Bernoulli", url = "", description = [] }
+        , { image = "simson.jpg", full_name = "", short_name = "Simson", url = "", description = [] }
+        , { image = "de-moivre.jpg", full_name = "", short_name = "De Moivre", url = "", description = [] }
+        , { image = "bernoulli-1.jpg", full_name = "", short_name = "Bernoulli", url = "", description = [] }
+        , { image = "leibniz.jpg", full_name = "", short_name = "Leibniz", url = "", description = [] }
+        , { image = "seki.jpg", full_name = "", short_name = "Seki", url = "", description = [] }
+        , { image = "newton.jpg", full_name = "", short_name = "Newton", url = "", description = [] }
+        , { image = "pascal.jpg", full_name = "", short_name = "Pascal", url = "", description = [] }
+        , { image = "wallis.jpg", full_name = "", short_name = "Wallis", url = "", description = [] }
+        , { image = "fermat.jpg", full_name = "", short_name = "Fermat", url = "", description = [] }
+        , { image = "cavalieri.jpg", full_name = "", short_name = "Cavalieri", url = "", description = [] }
+        , { image = "descartes.jpg", full_name = "", short_name = "Descartes", url = "", description = [] }
+        , { image = "desargues.jpg", full_name = "", short_name = "Desargues", url = "", description = [] }
+        , { image = "mersenne.jpg", full_name = "", short_name = "Mersenne", url = "", description = [] }
         ]
     ,
-        [ { image = "kepler.jpg", name = "Kepler" }
-        , { image = "galileo.jpg", name = "Galileo" }
-        , { image = "napier.jpg", name = "Napier" }
-        , { image = "stevin.jpg", name = "Stevin" }
-        , { image = "viete.jpg", name = "Viète" }
-        , { image = "nunes.jpg", name = "Pedro Nunes" }
-        , { image = "cardano.jpg", name = "Cardano" }
-        , { image = "tartaglia.jpg", name = "Tartaglia" }
-        , { image = "copernicus.jpg", name = "Copernicus" }
-        , { image = "leonardo.jpg", name = "Da Vinci" }
-        , { image = "pacioli.jpg", name = "Pacioli" }
-        , { image = "regiomontanus.jpg", name = "Regiomontanus" }
-        , { image = "madhava.jpg", name = "Madhava" }
-        , { image = "oresme.jpg", name = "Oresme" }
-        , { image = "shijie.jpg", name = "Zhu Shijie" }
-        , { image = "yang.jpg", name = "Yang" }
-        , { image = "jiushao.jpg", name = "Qin" }
-        , { image = "tusi.jpg", name = "Al-Din Tusi" }
-        , { image = "li.jpg", name = "Li Ye" }
-        , { image = "fibonacci.jpg", name = "Fibonacci" }
-        , { image = "bhaskara-2.jpg", name = "Bhaskara II" }
-        , { image = "khayyam.jpg", name = "Khayyam" }
-        , { image = "al-haytham.jpg", name = "Al-Haytham" }
-        , { image = "thabit.jpg", name = "Thabit" }
-        , { image = "al-khwarizmi.jpg", name = "Al-Khwarizmi" }
+        [ { image = "kepler.jpg", full_name = "", short_name = "Kepler", url = "", description = [] }
+        , { image = "galileo.jpg", full_name = "", short_name = "Galileo", url = "", description = [] }
+        , { image = "napier.jpg", full_name = "", short_name = "Napier", url = "", description = [] }
+        , { image = "stevin.jpg", full_name = "", short_name = "Stevin", url = "", description = [] }
+        , { image = "viete.jpg", full_name = "", short_name = "Viète", url = "", description = [] }
+        , { image = "nunes.jpg", full_name = "", short_name = "Pedro Nunes", url = "", description = [] }
+        , { image = "cardano.jpg", full_name = "", short_name = "Cardano", url = "", description = [] }
+        , { image = "tartaglia.jpg", full_name = "", short_name = "Tartaglia", url = "", description = [] }
+        , { image = "copernicus.jpg", full_name = "", short_name = "Copernicus", url = "", description = [] }
+        , { image = "leonardo.jpg", full_name = "", short_name = "Da Vinci", url = "", description = [] }
+        , { image = "pacioli.jpg", full_name = "", short_name = "Pacioli", url = "", description = [] }
+        , { image = "regiomontanus.jpg", full_name = "", short_name = "Regiomontanus", url = "", description = [] }
+        , { image = "madhava.jpg", full_name = "", short_name = "Madhava", url = "", description = [] }
+        , { image = "oresme.jpg", full_name = "", short_name = "Oresme", url = "", description = [] }
+        , { image = "shijie.jpg", full_name = "", short_name = "Zhu Shijie", url = "", description = [] }
+        , { image = "yang.jpg", full_name = "", short_name = "Yang", url = "", description = [] }
+        , { image = "jiushao.jpg", full_name = "", short_name = "Qin", url = "", description = [] }
+        , { image = "tusi.jpg", full_name = "", short_name = "Al-Din Tusi", url = "", description = [] }
+        , { image = "li.jpg", full_name = "", short_name = "Li Ye", url = "", description = [] }
+        , { image = "fibonacci.jpg", full_name = "", short_name = "Fibonacci", url = "", description = [] }
+        , { image = "bhaskara-2.jpg", full_name = "", short_name = "Bhaskara II", url = "", description = [] }
+        , { image = "khayyam.jpg", full_name = "", short_name = "Khayyam", url = "", description = [] }
+        , { image = "al-haytham.jpg", full_name = "", short_name = "Al-Haytham", url = "", description = [] }
+        , { image = "thabit.jpg", full_name = "", short_name = "Thabit", url = "", description = [] }
+        , { image = "al-khwarizmi.jpg", full_name = "", short_name = "Al-Khwarizmi", url = "", description = [] }
         ]
     ]
 
@@ -245,6 +250,7 @@ blank_game game_id players my_index =
       , stage = WaitingToStart
       , replaying = False
       , show_chosen_cards = False
+      , info_card = Nothing
       }
     , Cmd.none
     )
@@ -295,7 +301,7 @@ decode_round_definition : Array Card -> JD.Decoder (Array Card, List Card)
 decode_round_definition card_definitions =
     let
         decode_card = JD.string |> JD.andThen (\name -> 
-            case List.head <| (Array.toList >> List.filter (.name >> (==) name)) card_definitions of
+            case List.head <| (Array.toList >> List.filter (.short_name >> (==) name)) card_definitions of
                 Just card -> JD.succeed card
                 Nothing -> JD.fail <| "Unrecognised card "++name
             )
@@ -360,7 +366,7 @@ nocmd model = (model, Cmd.none)
 update : Msg -> Model -> (Model, Cmd Msg)
 update = Multiplayer.update options
 
-encode_card = .name >> JE.string
+encode_card = .short_name >> JE.string
 
 send_move : Game -> String -> List (String, JE.Value) -> Cmd MetaGameMsg
 send_move game action data = 
@@ -446,6 +452,8 @@ update_game my_id msg game =
                     [ ("show", JE.bool show)
                     ]
                 )
+
+            OtherGameMsg (HoverCard card) -> { game | info_card = if game.info_card == Just card then Nothing else Just card } |> nocmd
 
             PlayerJoined id -> { game | players = game.players++[blank_player (List.length game.players) id] } |> nocmd
 
@@ -614,22 +622,6 @@ view_game my_id game =
                     (List.filter .show buttons)
                 )
 
-        debugging = 
-            Html.ul
-                []
-                (List.map (\p -> 
-                    Html.li
-                        []
-                        [ Html.p [] [ Html.text p.id ] 
-                        , Html.p [] [ Html.text (fi (Array.length p.rounds)) ]
-                        , Html.ul
-                            []
-                            (Array.toList p.rounds |> List.map (.chosen >> Maybe.withDefault { name="", image = ""} >> view_card))
-                        ]
-                    )
-                    game.players
-                )
-
     in
         Html.main_
             []
@@ -715,7 +707,7 @@ view_boards round_number my_state game =
             _ ->
                 div
                     [ HA.class "container both" ]
-                    (List.indexedMap (vp game.show_chosen_cards) (playing_players game))
+                    ((List.indexedMap (vp game.show_chosen_cards) (playing_players game)) ++ [view_info_card game])
 
 view_player : Int -> PlayerState -> Bool -> Int -> PlayerState -> Html GameMsg
 view_player round_number my_state show_chosen_card index state =
@@ -767,16 +759,20 @@ view_board round my_state player =
             ]
             (List.concat <| Array.toList <| Grid.indexedMap view_piece (\_ -> Array.toList) board)
 
+view_card : Card -> Html GameMsg
 view_card card = 
     div
-        [ HA.class "card" ]
+        [ HA.class "card"
+        , HE.onClick (HoverCard card)
+        ]
+
         [ Html.img
             [ HA.src <| "images/"++card.image
             ]
             []
         , Html.div 
             [ HA.class "name" ]
-            [ Html.text card.name ]
+            [ Html.text card.short_name ]
         ]
 
 view_chosen_card round my_state player = 
@@ -789,3 +785,23 @@ view_chosen_card round my_state player =
             Just card ->
                 view_card card
         ]
+
+view_info_card game = case game.info_card of
+    Just card -> 
+        div
+            [ HA.class "info-card" ]
+
+            [ Html.h1  [] [ Html.a [ HA.href card.url, HA.target "_blank" ] [Html.text <| card.full_name] ] 
+            , Html.img
+                [ HA.src <| "images/"++card.image
+                ]
+                []
+            , Html.div
+                [ HA.class "description" ]
+                (List.map (\p -> Html.p [] [ Html.text p ]) card.description)
+            ]
+
+    Nothing ->
+        div 
+            [ HA.class "info-card hidden" ]
+            []

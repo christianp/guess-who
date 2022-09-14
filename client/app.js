@@ -5370,143 +5370,150 @@ var $author$project$GuessWho$round_definitions = A2(
 		[
 			_List_fromArray(
 			[
-				{image: 'viazovska.jpg', name: 'Viazovska'},
-				{image: 'avila.jpg', name: 'Avila'},
-				{image: 'mirzakhani.jpg', name: 'Mirzakhani'},
-				{image: 'tao.jpg', name: 'Tao'},
-				{image: 'perelman.jpg', name: 'Perelman'},
-				{image: 'zhang.jpg', name: 'Zhang'},
-				{image: 'daubechies.jpg', name: 'Daubechies'},
-				{image: 'bourgain.jpg', name: 'Bourgain'},
-				{image: 'wiles.jpg', name: 'Wiles'},
-				{image: 'shamir.jpg', name: 'Shamir'},
-				{image: 'yau.jpg', name: 'Yau'},
-				{image: 'matiyasevich.jpg', name: 'Matiyasevich'},
-				{image: 'thurston.jpg', name: 'Thurston'},
-				{image: 'uhlenbeck.jpg', name: 'Uhlenbeck'},
-				{image: 'conway.jpg', name: 'Conway'},
-				{image: 'langlands.jpg', name: 'Langlands'},
-				{image: 'cohen.jpg', name: 'Cohen'},
-				{image: 'easley.jpg', name: 'Easley'},
-				{image: 'appel.jpg', name: 'Appel'},
-				{image: 'penrose.jpg', name: 'Penrose'},
-				{image: 'nash.jpg', name: 'Nash'},
-				{image: 'grothendieck.jpg', name: 'Grothendieck'},
-				{image: 'serre.jpg', name: 'Serre'},
-				{image: 'mandelbrot.jpg', name: 'Mandelbrot'},
-				{image: 'wilkins.jpg', name: 'Wilkins'}
+				{
+				description: _List_fromArray(
+					['Maryna Sergiivna Viazovska is a Ukrainian mathematician known for her work in sphere packing.', 'She is full professor and Chair of Number Theory at the Institute of Mathematics of the École Polytechnique Fédérale de Lausanne in Switzerland.', 'She was awarded the Fields Medal in 2022.']),
+				full_name: 'Maryna Viazovska',
+				image: 'viazovska.jpg',
+				short_name: 'Viazovska',
+				url: 'https://en.wikipedia.org/wiki/Maryna_Viazovska'
+			},
+				{description: _List_Nil, full_name: 'Artur Avila', image: 'avila.jpg', short_name: 'Avila', url: ''},
+				{description: _List_Nil, full_name: 'Maryam Mirzakhani', image: 'mirzakhani.jpg', short_name: 'Mirzakhani', url: ''},
+				{description: _List_Nil, full_name: 'Terence Tao', image: 'tao.jpg', short_name: 'Tao', url: ''},
+				{description: _List_Nil, full_name: 'Grigory Perelman', image: 'perelman.jpg', short_name: 'Perelman', url: ''},
+				{description: _List_Nil, full_name: 'Yitang Zhang', image: 'zhang.jpg', short_name: 'Zhang', url: ''},
+				{description: _List_Nil, full_name: 'Ingrid Daubechies', image: 'daubechies.jpg', short_name: 'Daubechies', url: ''},
+				{description: _List_Nil, full_name: 'Jean Bourgain', image: 'bourgain.jpg', short_name: 'Bourgain', url: ''},
+				{description: _List_Nil, full_name: 'Andrew Wiles', image: 'wiles.jpg', short_name: 'Wiles', url: ''},
+				{description: _List_Nil, full_name: 'Adi Shamir', image: 'shamir.jpg', short_name: 'Shamir', url: ''},
+				{description: _List_Nil, full_name: 'Shing-Tung Yau', image: 'yau.jpg', short_name: 'Yau', url: ''},
+				{description: _List_Nil, full_name: 'Yuri Matiyasevich', image: 'matiyasevich.jpg', short_name: 'Matiyasevich', url: ''},
+				{description: _List_Nil, full_name: 'William Thurston', image: 'thurston.jpg', short_name: 'Thurston', url: ''},
+				{description: _List_Nil, full_name: 'Karen Uhlenbeck', image: 'uhlenbeck.jpg', short_name: 'Uhlenbeck', url: ''},
+				{description: _List_Nil, full_name: 'John H. Conway', image: 'conway.jpg', short_name: 'Conway', url: ''},
+				{description: _List_Nil, full_name: 'Robert Langlands', image: 'langlands.jpg', short_name: 'Langlands', url: ''},
+				{description: _List_Nil, full_name: 'Paul Cohen', image: 'cohen.jpg', short_name: 'Cohen', url: ''},
+				{description: _List_Nil, full_name: 'Annie Easley', image: 'easley.jpg', short_name: 'Easley', url: ''},
+				{description: _List_Nil, full_name: 'Kenneth Appel', image: 'appel.jpg', short_name: 'Appel', url: ''},
+				{description: _List_Nil, full_name: 'Roger Penrose', image: 'penrose.jpg', short_name: 'Penrose', url: ''},
+				{description: _List_Nil, full_name: 'John Nash', image: 'nash.jpg', short_name: 'Nash', url: ''},
+				{description: _List_Nil, full_name: 'Alexandre Grothendieck', image: 'grothendieck.jpg', short_name: 'Grothendieck', url: ''},
+				{description: _List_Nil, full_name: 'Jean-Pierre Serre', image: 'serre.jpg', short_name: 'Serre', url: ''},
+				{description: _List_Nil, full_name: 'Benoit Mandelbrot', image: 'mandelbrot.jpg', short_name: 'Mandelbrot', url: ''},
+				{description: _List_Nil, full_name: 'J. Ernest Wilkins Jr.', image: 'wilkins.jpg', short_name: 'Wilkins', url: ''}
 			]),
 			_List_fromArray(
 			[
-				{image: 'robinson.jpg', name: 'Robinson'},
-				{image: 'blackwell.jpg', name: 'Blackwell'},
-				{image: 'johnson.jpg', name: 'Johnson'},
-				{image: 'lorenz.jpg', name: 'Lorenz'},
-				{image: 'shannon.jpg', name: 'Shannon'},
-				{image: 'gardner.jpg', name: 'Gardner'},
-				{image: 'erdos.jpg', name: 'Erdős'},
-				{image: 'turing.jpg', name: 'Turing'},
-				{image: 'chern.jpg', name: 'Chern'},
-				{image: 'ulam.jpg', name: 'Ulam'},
-				{image: 'weil.jpg', name: 'Weil'},
-				{image: 'godel.jpg', name: 'Gödel'},
-				{image: 'neumann.jpg', name: 'von Neumann'},
-				{image: 'kolmogorov.jpg', name: 'Kolmogorov'},
-				{image: 'cartwright.jpg', name: 'Cartwright'},
-				{image: 'escher.jpg', name: 'Escher'},
-				{image: 'cox.jpg', name: 'Cox'},
-				{image: 'ramanujan.jpg', name: 'Ramanujan'},
-				{image: 'noether.jpg', name: 'Noether'},
-				{image: 'einstein.jpg', name: 'Einstein'},
-				{image: 'hardy.jpg', name: 'Hardy'},
-				{image: 'russell.jpg', name: 'Russell'},
-				{image: 'hilbert.jpg', name: 'Hilbert'},
-				{image: 'peano.jpg', name: 'Peano'},
-				{image: 'poincare.jpg', name: 'Poincaré'}
+				{description: _List_Nil, full_name: '', image: 'robinson.jpg', short_name: 'Robinson', url: ''},
+				{description: _List_Nil, full_name: '', image: 'blackwell.jpg', short_name: 'Blackwell', url: ''},
+				{description: _List_Nil, full_name: '', image: 'johnson.jpg', short_name: 'Johnson', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lorenz.jpg', short_name: 'Lorenz', url: ''},
+				{description: _List_Nil, full_name: '', image: 'shannon.jpg', short_name: 'Shannon', url: ''},
+				{description: _List_Nil, full_name: '', image: 'gardner.jpg', short_name: 'Gardner', url: ''},
+				{description: _List_Nil, full_name: '', image: 'erdos.jpg', short_name: 'Erdős', url: ''},
+				{description: _List_Nil, full_name: '', image: 'turing.jpg', short_name: 'Turing', url: ''},
+				{description: _List_Nil, full_name: '', image: 'chern.jpg', short_name: 'Chern', url: ''},
+				{description: _List_Nil, full_name: '', image: 'ulam.jpg', short_name: 'Ulam', url: ''},
+				{description: _List_Nil, full_name: '', image: 'weil.jpg', short_name: 'Weil', url: ''},
+				{description: _List_Nil, full_name: '', image: 'godel.jpg', short_name: 'Gödel', url: ''},
+				{description: _List_Nil, full_name: '', image: 'neumann.jpg', short_name: 'von Neumann', url: ''},
+				{description: _List_Nil, full_name: '', image: 'kolmogorov.jpg', short_name: 'Kolmogorov', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cartwright.jpg', short_name: 'Cartwright', url: ''},
+				{description: _List_Nil, full_name: '', image: 'escher.jpg', short_name: 'Escher', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cox.jpg', short_name: 'Cox', url: ''},
+				{description: _List_Nil, full_name: '', image: 'ramanujan.jpg', short_name: 'Ramanujan', url: ''},
+				{description: _List_Nil, full_name: '', image: 'noether.jpg', short_name: 'Noether', url: ''},
+				{description: _List_Nil, full_name: '', image: 'einstein.jpg', short_name: 'Einstein', url: ''},
+				{description: _List_Nil, full_name: '', image: 'hardy.jpg', short_name: 'Hardy', url: ''},
+				{description: _List_Nil, full_name: '', image: 'russell.jpg', short_name: 'Russell', url: ''},
+				{description: _List_Nil, full_name: '', image: 'hilbert.jpg', short_name: 'Hilbert', url: ''},
+				{description: _List_Nil, full_name: '', image: 'peano.jpg', short_name: 'Peano', url: ''},
+				{description: _List_Nil, full_name: '', image: 'poincare.jpg', short_name: 'Poincaré', url: ''}
 			]),
 			_List_fromArray(
 			[
-				{image: 'kovalevskaya.jpg', name: 'Kovalevskaya'},
-				{image: 'cantor.jpg', name: 'Cantor'},
-				{image: 'lie.jpg', name: 'Lie'},
-				{image: 'carroll.jpg', name: 'Carroll'},
-				{image: 'dedekind.jpg', name: 'Dedekind'},
-				{image: 'riemann.jpg', name: 'Riemann'},
-				{image: 'cayley.jpg', name: 'Cayley'},
-				{image: 'nightingale.jpg', name: 'Nightingale'},
-				{image: 'lovelace.jpg', name: 'Lovelace'},
-				{image: 'boole.jpg', name: 'Boole'},
-				{image: 'sylvester.jpg', name: 'Sylvester'},
-				{image: 'galois.jpg', name: 'Galois'},
-				{image: 'jacobi.jpg', name: 'Jacobi'},
-				{image: 'de-morgan.jpg', name: 'De Morgan'},
-				{image: 'hamilton.jpg', name: 'Hamilton'},
-				{image: 'bolyai.jpg', name: 'Bolyai'},
-				{image: 'abel.jpg', name: 'Abel'},
-				{image: 'lobachevsky.jpg', name: 'Lobachevsky'},
-				{image: 'babbage.jpg', name: 'Babbage'},
-				{image: 'mobius.jpg', name: 'Möbius'},
-				{image: 'cauchy.jpg', name: 'Cauchy'},
-				{image: 'somerville.jpg', name: 'Somerville'},
-				{image: 'gauss.jpg', name: 'Gauss'},
-				{image: 'germain.jpg', name: 'Germain'},
-				{image: 'zhenyi.jpg', name: 'Wang'}
+				{description: _List_Nil, full_name: '', image: 'kovalevskaya.jpg', short_name: 'Kovalevskaya', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cantor.jpg', short_name: 'Cantor', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lie.jpg', short_name: 'Lie', url: ''},
+				{description: _List_Nil, full_name: '', image: 'carroll.jpg', short_name: 'Carroll', url: ''},
+				{description: _List_Nil, full_name: '', image: 'dedekind.jpg', short_name: 'Dedekind', url: ''},
+				{description: _List_Nil, full_name: '', image: 'riemann.jpg', short_name: 'Riemann', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cayley.jpg', short_name: 'Cayley', url: ''},
+				{description: _List_Nil, full_name: '', image: 'nightingale.jpg', short_name: 'Nightingale', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lovelace.jpg', short_name: 'Lovelace', url: ''},
+				{description: _List_Nil, full_name: '', image: 'boole.jpg', short_name: 'Boole', url: ''},
+				{description: _List_Nil, full_name: '', image: 'sylvester.jpg', short_name: 'Sylvester', url: ''},
+				{description: _List_Nil, full_name: '', image: 'galois.jpg', short_name: 'Galois', url: ''},
+				{description: _List_Nil, full_name: '', image: 'jacobi.jpg', short_name: 'Jacobi', url: ''},
+				{description: _List_Nil, full_name: '', image: 'de-morgan.jpg', short_name: 'De Morgan', url: ''},
+				{description: _List_Nil, full_name: '', image: 'hamilton.jpg', short_name: 'Hamilton', url: ''},
+				{description: _List_Nil, full_name: '', image: 'bolyai.jpg', short_name: 'Bolyai', url: ''},
+				{description: _List_Nil, full_name: '', image: 'abel.jpg', short_name: 'Abel', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lobachevsky.jpg', short_name: 'Lobachevsky', url: ''},
+				{description: _List_Nil, full_name: '', image: 'babbage.jpg', short_name: 'Babbage', url: ''},
+				{description: _List_Nil, full_name: '', image: 'mobius.jpg', short_name: 'Möbius', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cauchy.jpg', short_name: 'Cauchy', url: ''},
+				{description: _List_Nil, full_name: '', image: 'somerville.jpg', short_name: 'Somerville', url: ''},
+				{description: _List_Nil, full_name: '', image: 'gauss.jpg', short_name: 'Gauss', url: ''},
+				{description: _List_Nil, full_name: '', image: 'germain.jpg', short_name: 'Germain', url: ''},
+				{description: _List_Nil, full_name: '', image: 'zhenyi.jpg', short_name: 'Wang', url: ''}
 			]),
 			_List_fromArray(
 			[
-				{image: 'fourier.jpg', name: 'Fourier'},
-				{image: 'legendre.jpg', name: 'Legendre'},
-				{image: 'mascheroni.jpg', name: 'Mascheroni'},
-				{image: 'laplace.jpg', name: 'Laplace'},
-				{image: 'monge.jpg', name: 'Monge'},
-				{image: 'lagrange.jpg', name: 'Lagrange'},
-				{image: 'banneker.jpg', name: 'Banneker'},
-				{image: 'lambert.jpg', name: 'Lambert'},
-				{image: 'agnesi.jpg', name: 'Agnesi'},
-				{image: 'euler.jpg', name: 'Euler'},
-				{image: 'chatelet.jpg', name: 'Du Châtelet'},
-				{image: 'bernoulli-2.jpg', name: 'Bernoulli'},
-				{image: 'simson.jpg', name: 'Simson'},
-				{image: 'de-moivre.jpg', name: 'De Moivre'},
-				{image: 'bernoulli-1.jpg', name: 'Bernoulli'},
-				{image: 'leibniz.jpg', name: 'Leibniz'},
-				{image: 'seki.jpg', name: 'Seki'},
-				{image: 'newton.jpg', name: 'Newton'},
-				{image: 'pascal.jpg', name: 'Pascal'},
-				{image: 'wallis.jpg', name: 'Wallis'},
-				{image: 'fermat.jpg', name: 'Fermat'},
-				{image: 'cavalieri.jpg', name: 'Cavalieri'},
-				{image: 'descartes.jpg', name: 'Descartes'},
-				{image: 'desargues.jpg', name: 'Desargues'},
-				{image: 'mersenne.jpg', name: 'Mersenne'}
+				{description: _List_Nil, full_name: '', image: 'fourier.jpg', short_name: 'Fourier', url: ''},
+				{description: _List_Nil, full_name: '', image: 'legendre.jpg', short_name: 'Legendre', url: ''},
+				{description: _List_Nil, full_name: '', image: 'mascheroni.jpg', short_name: 'Mascheroni', url: ''},
+				{description: _List_Nil, full_name: '', image: 'laplace.jpg', short_name: 'Laplace', url: ''},
+				{description: _List_Nil, full_name: '', image: 'monge.jpg', short_name: 'Monge', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lagrange.jpg', short_name: 'Lagrange', url: ''},
+				{description: _List_Nil, full_name: '', image: 'banneker.jpg', short_name: 'Banneker', url: ''},
+				{description: _List_Nil, full_name: '', image: 'lambert.jpg', short_name: 'Lambert', url: ''},
+				{description: _List_Nil, full_name: '', image: 'agnesi.jpg', short_name: 'Agnesi', url: ''},
+				{description: _List_Nil, full_name: '', image: 'euler.jpg', short_name: 'Euler', url: ''},
+				{description: _List_Nil, full_name: '', image: 'chatelet.jpg', short_name: 'Du Châtelet', url: ''},
+				{description: _List_Nil, full_name: '', image: 'bernoulli-2.jpg', short_name: 'Bernoulli', url: ''},
+				{description: _List_Nil, full_name: '', image: 'simson.jpg', short_name: 'Simson', url: ''},
+				{description: _List_Nil, full_name: '', image: 'de-moivre.jpg', short_name: 'De Moivre', url: ''},
+				{description: _List_Nil, full_name: '', image: 'bernoulli-1.jpg', short_name: 'Bernoulli', url: ''},
+				{description: _List_Nil, full_name: '', image: 'leibniz.jpg', short_name: 'Leibniz', url: ''},
+				{description: _List_Nil, full_name: '', image: 'seki.jpg', short_name: 'Seki', url: ''},
+				{description: _List_Nil, full_name: '', image: 'newton.jpg', short_name: 'Newton', url: ''},
+				{description: _List_Nil, full_name: '', image: 'pascal.jpg', short_name: 'Pascal', url: ''},
+				{description: _List_Nil, full_name: '', image: 'wallis.jpg', short_name: 'Wallis', url: ''},
+				{description: _List_Nil, full_name: '', image: 'fermat.jpg', short_name: 'Fermat', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cavalieri.jpg', short_name: 'Cavalieri', url: ''},
+				{description: _List_Nil, full_name: '', image: 'descartes.jpg', short_name: 'Descartes', url: ''},
+				{description: _List_Nil, full_name: '', image: 'desargues.jpg', short_name: 'Desargues', url: ''},
+				{description: _List_Nil, full_name: '', image: 'mersenne.jpg', short_name: 'Mersenne', url: ''}
 			]),
 			_List_fromArray(
 			[
-				{image: 'kepler.jpg', name: 'Kepler'},
-				{image: 'galileo.jpg', name: 'Galileo'},
-				{image: 'napier.jpg', name: 'Napier'},
-				{image: 'stevin.jpg', name: 'Stevin'},
-				{image: 'viete.jpg', name: 'Viète'},
-				{image: 'nunes.jpg', name: 'Pedro Nunes'},
-				{image: 'cardano.jpg', name: 'Cardano'},
-				{image: 'tartaglia.jpg', name: 'Tartaglia'},
-				{image: 'copernicus.jpg', name: 'Copernicus'},
-				{image: 'leonardo.jpg', name: 'Da Vinci'},
-				{image: 'pacioli.jpg', name: 'Pacioli'},
-				{image: 'regiomontanus.jpg', name: 'Regiomontanus'},
-				{image: 'madhava.jpg', name: 'Madhava'},
-				{image: 'oresme.jpg', name: 'Oresme'},
-				{image: 'shijie.jpg', name: 'Zhu Shijie'},
-				{image: 'yang.jpg', name: 'Yang'},
-				{image: 'jiushao.jpg', name: 'Qin'},
-				{image: 'tusi.jpg', name: 'Al-Din Tusi'},
-				{image: 'li.jpg', name: 'Li Ye'},
-				{image: 'fibonacci.jpg', name: 'Fibonacci'},
-				{image: 'bhaskara-2.jpg', name: 'Bhaskara II'},
-				{image: 'khayyam.jpg', name: 'Khayyam'},
-				{image: 'al-haytham.jpg', name: 'Al-Haytham'},
-				{image: 'thabit.jpg', name: 'Thabit'},
-				{image: 'al-khwarizmi.jpg', name: 'Al-Khwarizmi'}
+				{description: _List_Nil, full_name: '', image: 'kepler.jpg', short_name: 'Kepler', url: ''},
+				{description: _List_Nil, full_name: '', image: 'galileo.jpg', short_name: 'Galileo', url: ''},
+				{description: _List_Nil, full_name: '', image: 'napier.jpg', short_name: 'Napier', url: ''},
+				{description: _List_Nil, full_name: '', image: 'stevin.jpg', short_name: 'Stevin', url: ''},
+				{description: _List_Nil, full_name: '', image: 'viete.jpg', short_name: 'Viète', url: ''},
+				{description: _List_Nil, full_name: '', image: 'nunes.jpg', short_name: 'Pedro Nunes', url: ''},
+				{description: _List_Nil, full_name: '', image: 'cardano.jpg', short_name: 'Cardano', url: ''},
+				{description: _List_Nil, full_name: '', image: 'tartaglia.jpg', short_name: 'Tartaglia', url: ''},
+				{description: _List_Nil, full_name: '', image: 'copernicus.jpg', short_name: 'Copernicus', url: ''},
+				{description: _List_Nil, full_name: '', image: 'leonardo.jpg', short_name: 'Da Vinci', url: ''},
+				{description: _List_Nil, full_name: '', image: 'pacioli.jpg', short_name: 'Pacioli', url: ''},
+				{description: _List_Nil, full_name: '', image: 'regiomontanus.jpg', short_name: 'Regiomontanus', url: ''},
+				{description: _List_Nil, full_name: '', image: 'madhava.jpg', short_name: 'Madhava', url: ''},
+				{description: _List_Nil, full_name: '', image: 'oresme.jpg', short_name: 'Oresme', url: ''},
+				{description: _List_Nil, full_name: '', image: 'shijie.jpg', short_name: 'Zhu Shijie', url: ''},
+				{description: _List_Nil, full_name: '', image: 'yang.jpg', short_name: 'Yang', url: ''},
+				{description: _List_Nil, full_name: '', image: 'jiushao.jpg', short_name: 'Qin', url: ''},
+				{description: _List_Nil, full_name: '', image: 'tusi.jpg', short_name: 'Al-Din Tusi', url: ''},
+				{description: _List_Nil, full_name: '', image: 'li.jpg', short_name: 'Li Ye', url: ''},
+				{description: _List_Nil, full_name: '', image: 'fibonacci.jpg', short_name: 'Fibonacci', url: ''},
+				{description: _List_Nil, full_name: '', image: 'bhaskara-2.jpg', short_name: 'Bhaskara II', url: ''},
+				{description: _List_Nil, full_name: '', image: 'khayyam.jpg', short_name: 'Khayyam', url: ''},
+				{description: _List_Nil, full_name: '', image: 'al-haytham.jpg', short_name: 'Al-Haytham', url: ''},
+				{description: _List_Nil, full_name: '', image: 'thabit.jpg', short_name: 'Thabit', url: ''},
+				{description: _List_Nil, full_name: '', image: 'al-khwarizmi.jpg', short_name: 'Al-Khwarizmi', url: ''}
 			])
 		]));
 var $author$project$GuessWho$control_buttons = F2(
@@ -6092,6 +6099,7 @@ var $author$project$GuessWho$blank_game = F3(
 		return _Utils_Tuple2(
 			{
 				id: game_id,
+				info_card: $elm$core$Maybe$Nothing,
 				my_index: my_index,
 				players: A2($elm$core$List$indexedMap, $author$project$GuessWho$blank_player, players),
 				replaying: false,
@@ -6128,7 +6136,7 @@ var $author$project$GuessWho$decode_round_definition = function (card_definition
 						A2(
 							$elm$core$Basics$composeR,
 							function ($) {
-								return $.name;
+								return $.short_name;
 							},
 							$elm$core$Basics$eq(name))))(card_definitions));
 			if (_v0.$ === 'Just') {
@@ -6369,7 +6377,7 @@ var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$GuessWho$encode_card = A2(
 	$elm$core$Basics$composeR,
 	function ($) {
-		return $.name;
+		return $.short_name;
 	},
 	$elm$json$Json$Encode$string);
 var $elm$json$Json$Encode$int = _Json_wrap;
@@ -7293,7 +7301,7 @@ var $author$project$GuessWho$update_game = F3(
 					case 'StartShufflingCards':
 						var _v4 = msg.a;
 						return _Utils_Tuple2(game, $author$project$GuessWho$shuffle_cards);
-					default:
+					case 'ShowChosenCards':
 						var show = msg.a.a;
 						return _Utils_Tuple2(
 							_Utils_update(
@@ -7309,6 +7317,16 @@ var $author$project$GuessWho$update_game = F3(
 										'show',
 										$elm$json$Json$Encode$bool(show))
 									])));
+					default:
+						var card = msg.a.a;
+						return $author$project$GuessWho$nocmd(
+							_Utils_update(
+								game,
+								{
+									info_card: _Utils_eq(
+										game.info_card,
+										$elm$core$Maybe$Just(card)) ? $elm$core$Maybe$Nothing : $elm$core$Maybe$Just(card)
+								}));
 				}
 			case 'PlayerJoined':
 				var id = msg.a;
@@ -7922,13 +7940,89 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
 var $author$project$GuessWho$fi = $elm$core$String$fromInt;
-var $elm$core$Array$length = function (_v0) {
-	var len = _v0.a;
-	return len;
-};
 var $elm$html$Html$main_ = _VirtualDom_node('main');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $elm$html$Html$Attributes$target = $elm$html$Html$Attributes$stringProperty('target');
+var $author$project$GuessWho$view_info_card = function (game) {
+	var _v0 = game.info_card;
+	if (_v0.$ === 'Just') {
+		var card = _v0.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('info-card')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$h1,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$a,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$href(card.url),
+									$elm$html$Html$Attributes$target('_blank')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(card.full_name)
+								]))
+						])),
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('images/' + card.image)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('description')
+						]),
+					A2(
+						$elm$core$List$map,
+						function (p) {
+							return A2(
+								$elm$html$Html$p,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(p)
+									]));
+						},
+						card.description))
+				]));
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('info-card hidden')
+				]),
+			_List_Nil);
+	}
+};
 var $author$project$GuessWho$blank_round = {
 	board: $author$project$GuessWho$make_board($elm$core$Array$empty),
 	chosen: $elm$core$Maybe$Nothing
@@ -7997,19 +8091,17 @@ var $author$project$Grid$indexedMap = F3(
 	});
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
+var $author$project$GuessWho$HoverCard = function (a) {
+	return {$: 'HoverCard', a: a};
 };
 var $author$project$GuessWho$view_card = function (card) {
 	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('card')
+				$elm$html$Html$Attributes$class('card'),
+				$elm$html$Html$Events$onClick(
+				$author$project$GuessWho$HoverCard(card))
 			]),
 		_List_fromArray(
 			[
@@ -8028,7 +8120,7 @@ var $author$project$GuessWho$view_card = function (card) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(card.name)
+						$elm$html$Html$text(card.short_name)
 					]))
 			]));
 };
@@ -8159,10 +8251,15 @@ var $author$project$GuessWho$view_boards = F3(
 					[
 						$elm$html$Html$Attributes$class('container both')
 					]),
-				A2(
-					$elm$core$List$indexedMap,
-					vp(game.show_chosen_cards),
-					$author$project$GuessWho$playing_players(game)));
+				_Utils_ap(
+					A2(
+						$elm$core$List$indexedMap,
+						vp(game.show_chosen_cards),
+						$author$project$GuessWho$playing_players(game)),
+					_List_fromArray(
+						[
+							$author$project$GuessWho$view_info_card(game)
+						])));
 		}
 	});
 var $author$project$GuessWho$view_game = F2(
@@ -8236,52 +8333,6 @@ var $author$project$GuessWho$view_game = F2(
 							]));
 			}
 		}();
-		var debugging = A2(
-			$elm$html$Html$ul,
-			_List_Nil,
-			A2(
-				$elm$core$List$map,
-				function (p) {
-					return A2(
-						$elm$html$Html$li,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$p,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text(p.id)
-									])),
-								A2(
-								$elm$html$Html$p,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text(
-										$author$project$GuessWho$fi(
-											$elm$core$Array$length(p.rounds)))
-									])),
-								A2(
-								$elm$html$Html$ul,
-								_List_Nil,
-								A2(
-									$elm$core$List$map,
-									A2(
-										$elm$core$Basics$composeR,
-										function ($) {
-											return $.chosen;
-										},
-										A2(
-											$elm$core$Basics$composeR,
-											$elm$core$Maybe$withDefault(
-												{image: '', name: ''}),
-											$author$project$GuessWho$view_card)),
-									$elm$core$Array$toList(p.rounds)))
-							]));
-				},
-				game.players));
 		var buttons = A2($author$project$GuessWho$control_buttons, game, my_state);
 		var controls = A2(
 			$elm$html$Html$div,
