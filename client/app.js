@@ -8121,38 +8121,40 @@ var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$GuessWho$HoverCard = function (a) {
 	return {$: 'HoverCard', a: a};
 };
-var $author$project$GuessWho$view_card = function (card) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('card'),
-				A2(
-				$author$project$GuessWho$stopPropagationOn,
-				'click',
-				$author$project$GuessWho$HoverCard(card))
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$img,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$src('images/' + card.image)
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('name')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(card.short_name)
-					]))
-			]));
-};
+var $author$project$GuessWho$view_card = F2(
+	function (is_me, card) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('card'),
+					is_me ? $elm$html$Html$Events$onClick(
+					$author$project$GuessWho$HoverCard(card)) : A2(
+					$author$project$GuessWho$stopPropagationOn,
+					'click',
+					$author$project$GuessWho$HoverCard(card))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$img,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$src('images/' + card.image)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('name')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(card.short_name)
+						]))
+				]));
+	});
 var $author$project$GuessWho$view_board = F3(
 	function (round, my_state, player) {
 		var is_me = _Utils_eq(my_state.id, player.id);
@@ -8184,7 +8186,7 @@ var $author$project$GuessWho$view_board = F3(
 							]) : _List_Nil),
 					_List_fromArray(
 						[
-							$author$project$GuessWho$view_card(piece.card)
+							A2($author$project$GuessWho$view_card, is_me, piece.card)
 						]));
 			});
 		var board = round.board;
@@ -8229,7 +8231,7 @@ var $author$project$GuessWho$view_chosen_card = F3(
 						return A2($elm$html$Html$div, _List_Nil, _List_Nil);
 					} else {
 						var card = _v0.a;
-						return $author$project$GuessWho$view_card(card);
+						return A2($author$project$GuessWho$view_card, false, card);
 					}
 				}()
 				]));
@@ -8269,8 +8271,7 @@ var $author$project$GuessWho$view_boards = F3(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('container one'),
-						$elm$html$Html$Events$onClick($author$project$GuessWho$ClickBackground)
+						$elm$html$Html$Attributes$class('container one')
 					]),
 				_List_fromArray(
 					[

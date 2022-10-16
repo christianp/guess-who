@@ -569,7 +569,6 @@ view_boards round_number my_state game =
             Playing -> 
                 div
                     [ HA.class "container one" 
-                    , HE.onClick ClickBackground
                     ]
                     [ vp True (game.my_index-1) my_state ]
 
@@ -621,7 +620,7 @@ view_board round my_state player =
                      )
                 )
 
-                [ view_card piece.card
+                [ view_card is_me piece.card
                 ]
     in
         Html.div
@@ -633,11 +632,14 @@ view_board round my_state player =
             ]
             (List.concat <| Array.toList <| Grid.indexedMap view_piece (\_ -> Array.toList) board)
 
-view_card : Card -> Html GameMsg
-view_card card = 
+view_card : Bool -> Card -> Html GameMsg
+view_card is_me card = 
     div
         [ HA.class "card"
-        , stopPropagationOn "click" (HoverCard card)
+        , if is_me then
+            HE.onClick (HoverCard card)
+          else
+            stopPropagationOn "click" <| (HoverCard card)
         ]
 
         [ Html.img
@@ -657,7 +659,7 @@ view_chosen_card round my_state player =
                 div [] []
 
             Just card ->
-                view_card card
+                view_card False card
         ]
 
 view_info_card game = case game.info_card of
