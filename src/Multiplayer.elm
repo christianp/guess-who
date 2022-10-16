@@ -135,6 +135,7 @@ apply_websocket_message options encoded_data model =
                     "end_game" ->
                         JD.succeed [GameMsg EndGame]
                     "global_stats" -> JD.map (SetGlobalState >> List.singleton) decode_global_state
+                    "hi" -> JD.succeed []
                     _ -> JD.fail ("unrecognised action "++action)
                 )
 

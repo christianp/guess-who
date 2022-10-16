@@ -11,6 +11,7 @@ import Html.Events as HE
 import Json.Decode as JD
 import Json.Decode.Extra
 import Json.Encode as JE
+import Mathematicians exposing (round_definitions)
 import Multiplayer exposing (MultiplayerGame, GameID, PlayerID, GameMsg(..), Msg(..))
 import Random
 import Random.Array
@@ -38,7 +39,7 @@ type alias Card =
     , short_name : String
     , full_name : String
     , url : String
-    , description : List String
+    , description : String
     }
 
 type alias Piece =
@@ -88,6 +89,8 @@ type GameMsg
     | SetRound Int
     | ShowChosenCards Bool
     | HoverCard Card
+    | ClickBackground
+    | Noop
 
 type alias MetaGameMsg = Multiplayer.GameMsg GameMsg
 
@@ -95,145 +98,6 @@ type alias Msg = Multiplayer.Msg GameMsg
 
 rows = 5
 cols = 5
-
-round_definitions : List (Array Card)
-round_definitions = List.map Array.fromList
-    [
-        [ { image = "viazovska.jpg", full_name = "Maryna Viazovska", short_name = "Viazovska", url = "https://en.wikipedia.org/wiki/Maryna_Viazovska", description = [ "Maryna Sergiivna Viazovska is a Ukrainian mathematician known for her work in sphere packing.", "She is full professor and Chair of Number Theory at the Institute of Mathematics of the École Polytechnique Fédérale de Lausanne in Switzerland.", "She was awarded the Fields Medal in 2022."] }
-        , { image = "avila.jpg", full_name = "Artur Avila", short_name = "Avila", url = "", description = [] }
-        , { image = "mirzakhani.jpg", full_name = "Maryam Mirzakhani", short_name = "Mirzakhani", url = "", description = [] }
-        , { image = "tao.jpg", full_name = "Terence Tao", short_name = "Tao", url = "", description = [] }
-        , { image = "perelman.jpg", full_name = "Grigory Perelman", short_name = "Perelman", url = "", description = [] }
-        , { image = "zhang.jpg", full_name = "Yitang Zhang", short_name = "Zhang", url = "", description = [] }
-        , { image = "daubechies.jpg", full_name = "Ingrid Daubechies", short_name = "Daubechies", url = "", description = [] }
-        , { image = "bourgain.jpg", full_name = "Jean Bourgain", short_name = "Bourgain", url = "", description = [] }
-        , { image = "wiles.jpg", full_name = "Andrew Wiles", short_name = "Wiles", url = "", description = [] }
-        , { image = "shamir.jpg", full_name = "Adi Shamir", short_name = "Shamir", url = "", description = [] }
-        , { image = "yau.jpg", full_name = "Shing-Tung Yau", short_name = "Yau", url = "", description = [] }
-        , { image = "matiyasevich.jpg", full_name = "Yuri Matiyasevich", short_name = "Matiyasevich", url = "", description = [] }
-        , { image = "thurston.jpg", full_name = "William Thurston", short_name = "Thurston", url = "", description = [] }
-        , { image = "uhlenbeck.jpg", full_name = "Karen Uhlenbeck", short_name = "Uhlenbeck", url = "", description = [] }
-        , { image = "conway.jpg", full_name = "John H. Conway", short_name = "Conway", url = "", description = [] }
-        , { image = "langlands.jpg", full_name = "Robert Langlands", short_name = "Langlands", url = "", description = [] }
-        , { image = "cohen.jpg", full_name = "Paul Cohen", short_name = "Cohen", url = "", description = [] }
-        , { image = "easley.jpg", full_name = "Annie Easley", short_name = "Easley", url = "", description = [] }
-        , { image = "appel.jpg", full_name = "Kenneth Appel", short_name = "Appel", url = "", description = [] }
-        , { image = "penrose.jpg", full_name = "Roger Penrose", short_name = "Penrose", url = "", description = [] }
-        , { image = "nash.jpg", full_name = "John Nash", short_name = "Nash", url = "", description = [] }
-        , { image = "grothendieck.jpg", full_name = "Alexandre Grothendieck", short_name = "Grothendieck", url = "", description = [] }
-        , { image = "serre.jpg", full_name = "Jean-Pierre Serre", short_name = "Serre", url = "", description = [] }
-        , { image = "mandelbrot.jpg", full_name = "Benoit Mandelbrot", short_name = "Mandelbrot", url = "", description = [] }
-        , { image = "wilkins.jpg", full_name = "J. Ernest Wilkins Jr.", short_name = "Wilkins", url = "", description = [] }
-        ]
-    ,
-        [ { image = "robinson.jpg", full_name = "", short_name = "Robinson", url = "", description = [] }
-        , { image = "blackwell.jpg", full_name = "", short_name = "Blackwell", url = "", description = [] }
-        , { image = "johnson.jpg", full_name = "", short_name = "Johnson", url = "", description = [] }
-        , { image = "lorenz.jpg", full_name = "", short_name = "Lorenz", url = "", description = [] }
-        , { image = "shannon.jpg", full_name = "", short_name = "Shannon", url = "", description = [] }
-        , { image = "gardner.jpg", full_name = "", short_name = "Gardner", url = "", description = [] }
-        , { image = "erdos.jpg", full_name = "", short_name = "Erdős", url = "", description = [] }
-        , { image = "turing.jpg", full_name = "", short_name = "Turing", url = "", description = [] }
-        , { image = "chern.jpg", full_name = "", short_name = "Chern", url = "", description = [] }
-        , { image = "ulam.jpg", full_name = "", short_name = "Ulam", url = "", description = [] }
-        , { image = "weil.jpg", full_name = "", short_name = "Weil", url = "", description = [] }
-        , { image = "godel.jpg", full_name = "", short_name = "Gödel", url = "", description = [] }
-        , { image = "neumann.jpg", full_name = "", short_name = "von Neumann", url = "", description = [] }
-        , { image = "kolmogorov.jpg", full_name = "", short_name = "Kolmogorov", url = "", description = [] }
-        , { image = "cartwright.jpg", full_name = "", short_name = "Cartwright", url = "", description = [] }
-        , { image = "escher.jpg", full_name = "", short_name = "Escher", url = "", description = [] }
-        , { image = "cox.jpg", full_name = "", short_name = "Cox", url = "", description = [] }
-        , { image = "ramanujan.jpg", full_name = "", short_name = "Ramanujan", url = "", description = [] }
-        , { image = "noether.jpg", full_name = "", short_name = "Noether", url = "", description = [] }
-        , { image = "einstein.jpg", full_name = "", short_name = "Einstein", url = "", description = [] }
-        , { image = "hardy.jpg", full_name = "", short_name = "Hardy", url = "", description = [] }
-        , { image = "russell.jpg", full_name = "", short_name = "Russell", url = "", description = [] }
-        , { image = "hilbert.jpg", full_name = "", short_name = "Hilbert", url = "", description = [] }
-        , { image = "peano.jpg", full_name = "", short_name = "Peano", url = "", description = [] }
-        , { image = "poincare.jpg", full_name = "", short_name = "Poincaré", url = "", description = [] }
-        ]
-    ,
-        [ { image = "kovalevskaya.jpg", full_name = "", short_name = "Kovalevskaya", url = "", description = [] }
-        , { image = "cantor.jpg", full_name = "", short_name = "Cantor", url = "", description = [] }
-        , { image = "lie.jpg", full_name = "", short_name = "Lie", url = "", description = [] }
-        , { image = "carroll.jpg", full_name = "", short_name = "Carroll", url = "", description = [] }
-        , { image = "dedekind.jpg", full_name = "", short_name = "Dedekind", url = "", description = [] }
-        , { image = "riemann.jpg", full_name = "", short_name = "Riemann", url = "", description = [] }
-        , { image = "cayley.jpg", full_name = "", short_name = "Cayley", url = "", description = [] }
-        , { image = "nightingale.jpg", full_name = "", short_name = "Nightingale", url = "", description = [] }
-        , { image = "lovelace.jpg", full_name = "", short_name = "Lovelace", url = "", description = [] }
-        , { image = "boole.jpg", full_name = "", short_name = "Boole", url = "", description = [] }
-        , { image = "sylvester.jpg", full_name = "", short_name = "Sylvester", url = "", description = [] }
-        , { image = "galois.jpg", full_name = "", short_name = "Galois", url = "", description = [] }
-        , { image = "jacobi.jpg", full_name = "", short_name = "Jacobi", url = "", description = [] }
-        , { image = "de-morgan.jpg", full_name = "", short_name = "De Morgan", url = "", description = [] }
-        , { image = "hamilton.jpg", full_name = "", short_name = "Hamilton", url = "", description = [] }
-        , { image = "bolyai.jpg", full_name = "", short_name = "Bolyai", url = "", description = [] }
-        , { image = "abel.jpg", full_name = "", short_name = "Abel", url = "", description = [] }
-        , { image = "lobachevsky.jpg", full_name = "", short_name = "Lobachevsky", url = "", description = [] }
-        , { image = "babbage.jpg", full_name = "", short_name = "Babbage", url = "", description = [] }
-        , { image = "mobius.jpg", full_name = "", short_name = "Möbius", url = "", description = [] }
-        , { image = "cauchy.jpg", full_name = "", short_name = "Cauchy", url = "", description = [] }
-        , { image = "somerville.jpg", full_name = "", short_name = "Somerville", url = "", description = [] }
-        , { image = "gauss.jpg", full_name = "", short_name = "Gauss", url = "", description = [] }
-        , { image = "germain.jpg", full_name = "", short_name = "Germain", url = "", description = [] }
-        , { image = "zhenyi.jpg", full_name = "", short_name = "Wang", url = "", description = [] }
-        ]
-    ,
-        [ { image = "fourier.jpg", full_name = "", short_name = "Fourier", url = "", description = [] }
-        , { image = "legendre.jpg", full_name = "", short_name = "Legendre", url = "", description = [] }
-        , { image = "mascheroni.jpg", full_name = "", short_name = "Mascheroni", url = "", description = [] }
-        , { image = "laplace.jpg", full_name = "", short_name = "Laplace", url = "", description = [] }
-        , { image = "monge.jpg", full_name = "", short_name = "Monge", url = "", description = [] }
-        , { image = "lagrange.jpg", full_name = "", short_name = "Lagrange", url = "", description = [] }
-        , { image = "banneker.jpg", full_name = "", short_name = "Banneker", url = "", description = [] }
-        , { image = "lambert.jpg", full_name = "", short_name = "Lambert", url = "", description = [] }
-        , { image = "agnesi.jpg", full_name = "", short_name = "Agnesi", url = "", description = [] }
-        , { image = "euler.jpg", full_name = "", short_name = "Euler", url = "", description = [] }
-        , { image = "chatelet.jpg", full_name = "", short_name = "Du Châtelet", url = "", description = [] }
-        , { image = "bernoulli-2.jpg", full_name = "", short_name = "Bernoulli", url = "", description = [] }
-        , { image = "simson.jpg", full_name = "", short_name = "Simson", url = "", description = [] }
-        , { image = "de-moivre.jpg", full_name = "", short_name = "De Moivre", url = "", description = [] }
-        , { image = "bernoulli-1.jpg", full_name = "", short_name = "Bernoulli", url = "", description = [] }
-        , { image = "leibniz.jpg", full_name = "", short_name = "Leibniz", url = "", description = [] }
-        , { image = "seki.jpg", full_name = "", short_name = "Seki", url = "", description = [] }
-        , { image = "newton.jpg", full_name = "", short_name = "Newton", url = "", description = [] }
-        , { image = "pascal.jpg", full_name = "", short_name = "Pascal", url = "", description = [] }
-        , { image = "wallis.jpg", full_name = "", short_name = "Wallis", url = "", description = [] }
-        , { image = "fermat.jpg", full_name = "", short_name = "Fermat", url = "", description = [] }
-        , { image = "cavalieri.jpg", full_name = "", short_name = "Cavalieri", url = "", description = [] }
-        , { image = "descartes.jpg", full_name = "", short_name = "Descartes", url = "", description = [] }
-        , { image = "desargues.jpg", full_name = "", short_name = "Desargues", url = "", description = [] }
-        , { image = "mersenne.jpg", full_name = "", short_name = "Mersenne", url = "", description = [] }
-        ]
-    ,
-        [ { image = "kepler.jpg", full_name = "", short_name = "Kepler", url = "", description = [] }
-        , { image = "galileo.jpg", full_name = "", short_name = "Galileo", url = "", description = [] }
-        , { image = "napier.jpg", full_name = "", short_name = "Napier", url = "", description = [] }
-        , { image = "stevin.jpg", full_name = "", short_name = "Stevin", url = "", description = [] }
-        , { image = "viete.jpg", full_name = "", short_name = "Viète", url = "", description = [] }
-        , { image = "nunes.jpg", full_name = "", short_name = "Pedro Nunes", url = "", description = [] }
-        , { image = "cardano.jpg", full_name = "", short_name = "Cardano", url = "", description = [] }
-        , { image = "tartaglia.jpg", full_name = "", short_name = "Tartaglia", url = "", description = [] }
-        , { image = "copernicus.jpg", full_name = "", short_name = "Copernicus", url = "", description = [] }
-        , { image = "leonardo.jpg", full_name = "", short_name = "Da Vinci", url = "", description = [] }
-        , { image = "pacioli.jpg", full_name = "", short_name = "Pacioli", url = "", description = [] }
-        , { image = "regiomontanus.jpg", full_name = "", short_name = "Regiomontanus", url = "", description = [] }
-        , { image = "madhava.jpg", full_name = "", short_name = "Madhava", url = "", description = [] }
-        , { image = "oresme.jpg", full_name = "", short_name = "Oresme", url = "", description = [] }
-        , { image = "shijie.jpg", full_name = "", short_name = "Zhu Shijie", url = "", description = [] }
-        , { image = "yang.jpg", full_name = "", short_name = "Yang", url = "", description = [] }
-        , { image = "jiushao.jpg", full_name = "", short_name = "Qin", url = "", description = [] }
-        , { image = "tusi.jpg", full_name = "", short_name = "Al-Din Tusi", url = "", description = [] }
-        , { image = "li.jpg", full_name = "", short_name = "Li Ye", url = "", description = [] }
-        , { image = "fibonacci.jpg", full_name = "", short_name = "Fibonacci", url = "", description = [] }
-        , { image = "bhaskara-2.jpg", full_name = "", short_name = "Bhaskara II", url = "", description = [] }
-        , { image = "khayyam.jpg", full_name = "", short_name = "Khayyam", url = "", description = [] }
-        , { image = "al-haytham.jpg", full_name = "", short_name = "Al-Haytham", url = "", description = [] }
-        , { image = "thabit.jpg", full_name = "", short_name = "Thabit", url = "", description = [] }
-        , { image = "al-khwarizmi.jpg", full_name = "", short_name = "Al-Khwarizmi", url = "", description = [] }
-        ]
-    ]
 
 make_piece card = { card = card, up = True }
 
@@ -387,7 +251,7 @@ update_game my_id msg game =
             EndReplay -> { game | replaying = False } |> nocmd
 
             OtherGameMsg (SetRound n) -> 
-                ( { game | stage = InProgress n }
+                ( { game | stage = InProgress n, info_card = Nothing }
                 , send_move game "set round" 
                     [ ("round", (JE.int n))
                     ]
@@ -454,6 +318,8 @@ update_game my_id msg game =
                 )
 
             OtherGameMsg (HoverCard card) -> { game | info_card = if game.info_card == Just card then Nothing else Just card } |> nocmd
+
+            OtherGameMsg ClickBackground -> { game | info_card = Nothing } |> nocmd
 
             PlayerJoined id -> { game | players = game.players++[blank_player (List.length game.players) id] } |> nocmd
 
@@ -702,11 +568,16 @@ view_boards round_number my_state game =
         case my_state.role of
             Playing -> 
                 div
-                    [ HA.class "container one" ]
+                    [ HA.class "container one" 
+                    , HE.onClick ClickBackground
+                    ]
                     [ vp True (game.my_index-1) my_state ]
+
             _ ->
                 div
-                    [ HA.class "container both" ]
+                    [ HA.class "container both"
+                    , HE.onClick ClickBackground
+                    ]
                     ((List.indexedMap (vp game.show_chosen_cards) (playing_players game)) ++ [view_info_card game])
 
 view_player : Int -> PlayerState -> Bool -> Int -> PlayerState -> Html GameMsg
@@ -726,6 +597,9 @@ view_player round_number my_state show_chosen_card index state =
             , view_board round my_state state
             ]
 
+stopPropagationOn : String -> msg -> Html.Attribute msg
+stopPropagationOn name msg = HE.stopPropagationOn name (JD.succeed (msg, True))
+
 view_board : Round -> PlayerState -> PlayerState -> Html GameMsg
 view_board round my_state player =
     let
@@ -741,7 +615,7 @@ view_board round my_state player =
                   , HA.attribute "role" "button"
                   ]
                   ++ (if is_me then
-                      [ HE.onClick <| ClickPiece player.id col row ]
+                      [ stopPropagationOn "click" <| ClickPiece player.id col row ]
                      else
                       []
                      )
@@ -763,7 +637,7 @@ view_card : Card -> Html GameMsg
 view_card card = 
     div
         [ HA.class "card"
-        , HE.onClick (HoverCard card)
+        , stopPropagationOn "click" (HoverCard card)
         ]
 
         [ Html.img
@@ -789,7 +663,9 @@ view_chosen_card round my_state player =
 view_info_card game = case game.info_card of
     Just card -> 
         div
-            [ HA.class "info-card" ]
+            [ HA.class "info-card" 
+            , stopPropagationOn "click" Noop
+            ]
 
             [ Html.h1  [] [ Html.a [ HA.href card.url, HA.target "_blank" ] [Html.text <| card.full_name] ] 
             , Html.img
@@ -798,7 +674,7 @@ view_info_card game = case game.info_card of
                 []
             , Html.div
                 [ HA.class "description" ]
-                (List.map (\p -> Html.p [] [ Html.text p ]) card.description)
+                [ Html.p [] [ Html.text card.description ] ]
             ]
 
     Nothing ->
