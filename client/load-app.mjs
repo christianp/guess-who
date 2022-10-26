@@ -31,6 +31,16 @@ async function init_app() {
         console.log('sending',message);
         client.send(message);
     });
+
+    const fullscreener = document.body;
+    fullscreener.addEventListener('click', e => {
+        if(fullscreener.requestFullscreen) {
+            fullscreener.requestFullscreen();
+        }
+        if(fullscreener.webkitRequestFullscreen) {
+            fullscreener.webkitRequestFullscreen();
+        }
+    });
 }
 
 init_app();
