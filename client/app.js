@@ -5242,8 +5242,14 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$document = _Browser_document;
+var $author$project$GuessWho$LobbyMain = {$: 'LobbyMain'};
 var $author$project$GuessWho$blank_model = function (info) {
-	return {game: $elm$core$Maybe$Nothing, global_state: $elm$core$Maybe$Nothing, my_id: info.id};
+	return {
+		game: $elm$core$Maybe$Nothing,
+		global_state: $elm$core$Maybe$Nothing,
+		lobby: {screen: $author$project$GuessWho$LobbyMain},
+		my_id: info.id
+	};
 };
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
@@ -7359,12 +7365,21 @@ var $author$project$GuessWho$update_game = F3(
 		}
 		return _Utils_Tuple2(game, $elm$core$Platform$Cmd$none);
 	});
+var $author$project$GuessWho$update_lobby = F2(
+	function (msg, lobby) {
+		var screen = msg.a;
+		return $author$project$GuessWho$nocmd(
+			_Utils_update(
+				lobby,
+				{screen: screen}));
+	});
 var $author$project$GuessWho$options = function (model) {
 	return {
 		blank_game: $author$project$GuessWho$blank_game,
 		decode_move: $author$project$GuessWho$decode_move,
 		decode_websocket_message: $author$project$GuessWho$decode_websocket_message,
-		update_game: $author$project$GuessWho$update_game(model.my_id)
+		update_game: $author$project$GuessWho$update_game(model.my_id),
+		update_lobby: $author$project$GuessWho$update_lobby
 	};
 };
 var $author$project$Multiplayer$EndGame = {$: 'EndGame'};
@@ -7372,6 +7387,9 @@ var $author$project$Multiplayer$JoinGame = F4(
 	function (a, b, c, d) {
 		return {$: 'JoinGame', a: a, b: b, c: c, d: d};
 	});
+var $author$project$Multiplayer$LobbyMsg = function (a) {
+	return {$: 'LobbyMsg', a: a};
+};
 var $author$project$Multiplayer$PlayerJoined = function (a) {
 	return {$: 'PlayerJoined', a: a};
 };
@@ -7542,19 +7560,19 @@ var $author$project$Multiplayer$apply_websocket_message = F3(
 				$elm$json$Json$Decode$map(
 					$elm$core$List$map($author$project$Multiplayer$GameMsg)),
 				$elm$json$Json$Decode$maybe)(options.decode_websocket_message));
-		var _v7 = A2($elm$json$Json$Decode$decodeValue, decode_websocket_message, encoded_data);
-		if (_v7.$ === 'Ok') {
-			var msgs = _v7.a;
+		var _v8 = A2($elm$json$Json$Decode$decodeValue, decode_websocket_message, encoded_data);
+		if (_v8.$ === 'Ok') {
+			var msgs = _v8.a;
 			return A3(
 				$author$project$Multiplayer$apply_updates,
 				$author$project$Multiplayer$update(
-					function (_v8) {
+					function (_v9) {
 						return options;
 					}),
 				model,
 				msgs);
 		} else {
-			var x = _v7.a;
+			var x = _v8.a;
 			var q = A2($elm$core$Debug$log, 'error', x);
 			return $author$project$Multiplayer$nocmd(model);
 		}
@@ -7647,6 +7665,16 @@ var $author$project$Multiplayer$update = F3(
 								A2($elm$core$Platform$Cmd$map, $author$project$Multiplayer$GameMsg, gcmd));
 						}
 					}
+				case 'LobbyMsg':
+					var lmsg = msg.a;
+					var _v7 = A2(options.update_lobby, lmsg, model.lobby);
+					var nl = _v7.a;
+					var lcmd = _v7.b;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{lobby: nl}),
+						A2($elm$core$Platform$Cmd$map, $author$project$Multiplayer$LobbyMsg, lcmd));
 				case 'WebsocketMessage':
 					var encoded_data = msg.a;
 					return A3($author$project$Multiplayer$apply_websocket_message, options, encoded_data, model);
@@ -7668,6 +7696,7 @@ var $author$project$Multiplayer$update = F3(
 		}
 	});
 var $author$project$GuessWho$update = $author$project$Multiplayer$update($author$project$GuessWho$options);
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -7676,259 +7705,6 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$header = _VirtualDom_node('header');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$GuessWho$header = A2(
-	$elm$html$Html$header,
-	_List_Nil,
-	_List_fromArray(
-		[
-			A2(
-			$elm$html$Html$h1,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Guess Who?')
-				]))
-		]));
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$html$Html$li = _VirtualDom_node('li');
-var $author$project$Multiplayer$NewGame = {$: 'NewGame'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
-var $author$project$GuessWho$new_game_button = function (model) {
-	return A2(
-		$elm$html$Html$button,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('new-game'),
-				$elm$html$Html$Events$onClick($author$project$Multiplayer$NewGame)
-			]),
-		_List_fromArray(
-			[
-				$elm$html$Html$text('Start a new game')
-			]));
-};
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $author$project$Util$pluralise = F3(
-	function (n, singular, plural) {
-		return (n === 1) ? singular : plural;
-	});
-var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $elm$core$List$isEmpty = function (xs) {
-	if (!xs.b) {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $elm$html$Html$table = _VirtualDom_node('table');
-var $elm$html$Html$tbody = _VirtualDom_node('tbody');
-var $elm$html$Html$th = _VirtualDom_node('th');
-var $elm$html$Html$thead = _VirtualDom_node('thead');
-var $elm$html$Html$tr = _VirtualDom_node('tr');
-var $author$project$Multiplayer$RequestJoinGame = function (a) {
-	return {$: 'RequestJoinGame', a: a};
-};
-var $elm$html$Html$td = _VirtualDom_node('td');
-var $author$project$GuessWho$view_lobby_game = function (game) {
-	var num_players = $elm$core$List$length(game.players);
-	return A2(
-		$elm$html$Html$tr,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('game')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$td,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(game.id)
-					])),
-				A2(
-				$elm$html$Html$td,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('num-players')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$String$fromInt(num_players))
-					])),
-				A2(
-				$elm$html$Html$td,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Multiplayer$RequestJoinGame(game))
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('join')
-							]))
-					]))
-			]));
-};
-var $author$project$GuessWho$view_games = function (games) {
-	return $elm$core$List$isEmpty(games) ? A2(
-		$elm$html$Html$p,
-		_List_Nil,
-		_List_fromArray(
-			[
-				$elm$html$Html$text('There are no games at the moment')
-			])) : A2(
-		$elm$html$Html$table,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('games')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$thead,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$tr,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$th,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Game ID')
-									])),
-								A2(
-								$elm$html$Html$th,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Players')
-									]))
-							]))
-					])),
-				A2(
-				$elm$html$Html$tbody,
-				_List_Nil,
-				A2($elm$core$List$map, $author$project$GuessWho$view_lobby_game, games))
-			]));
-};
-var $author$project$GuessWho$lobby = function (model) {
-	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('app')
-			]),
-		_List_fromArray(
-			[
-				$author$project$GuessWho$header,
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				function () {
-					var _v0 = model.global_state;
-					if (_v0.$ === 'Nothing') {
-						return _List_fromArray(
-							[
-								A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$id('not-connected')
-									]),
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Waiting for data from the server.')
-									]))
-							]);
-					} else {
-						var state = _v0.a;
-						return _List_fromArray(
-							[
-								$author$project$GuessWho$view_games(state.games),
-								$author$project$GuessWho$new_game_button(model),
-								A2(
-								$elm$html$Html$div,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$class('info')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$p,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(
-												$elm$core$String$fromInt(state.num_players) + (' ' + (A3($author$project$Util$pluralise, state.num_players, 'player', 'players') + ' connected')))
-											])),
-										A2(
-										$elm$html$Html$p,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('debug')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text('You are: ' + model.my_id)
-											])),
-										A2(
-										$elm$html$Html$ul,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('debug')
-											]),
-										A2(
-											$elm$core$List$map,
-											function (id) {
-												return A2(
-													$elm$html$Html$li,
-													_List_Nil,
-													_List_fromArray(
-														[
-															$elm$html$Html$text(id)
-														]));
-											},
-											state.clients))
-									]))
-							]);
-					}
-				}())
-			]));
-};
 var $elm$html$Html$Attributes$classList = function (classes) {
 	return $elm$html$Html$Attributes$class(
 		A2(
@@ -7947,10 +7723,38 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
+var $elm$html$Html$div = _VirtualDom_node('div');
 var $author$project$GuessWho$fi = $elm$core$String$fromInt;
+var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$li = _VirtualDom_node('li');
 var $elm$html$Html$main_ = _VirtualDom_node('main');
 var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
 var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$p = _VirtualDom_node('p');
+var $author$project$Util$pluralise = F3(
+	function (n, singular, plural) {
+		return (n === 1) ? singular : plural;
+	});
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$GuessWho$ClickBackground = {$: 'ClickBackground'};
 var $author$project$GuessWho$Noop = {$: 'Noop'};
 var $elm$html$Html$a = _VirtualDom_node('a');
@@ -8411,6 +8215,287 @@ var $author$project$GuessWho$view_game = F2(
 					controls
 				]));
 	});
+var $author$project$GuessWho$ViewAllCards = {$: 'ViewAllCards'};
+var $elm$html$Html$header = _VirtualDom_node('header');
+var $author$project$GuessWho$header = A2(
+	$elm$html$Html$header,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			$elm$html$Html$h1,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text('Guess Who?')
+				]))
+		]));
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $author$project$Multiplayer$NewGame = {$: 'NewGame'};
+var $author$project$GuessWho$new_game_button = function (model) {
+	return A2(
+		$elm$html$Html$button,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('new-game'),
+				$elm$html$Html$Events$onClick($author$project$Multiplayer$NewGame)
+			]),
+		_List_fromArray(
+			[
+				$elm$html$Html$text('Start a new game')
+			]));
+};
+var $author$project$GuessWho$SetLobbyScreen = function (a) {
+	return {$: 'SetLobbyScreen', a: a};
+};
+var $author$project$GuessWho$set_lobby_screen_button = F2(
+	function (screen, label) {
+		return A2(
+			$elm$html$Html$button,
+			_List_fromArray(
+				[
+					$elm$html$Html$Events$onClick(
+					$author$project$Multiplayer$LobbyMsg(
+						$author$project$GuessWho$SetLobbyScreen(screen)))
+				]),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(label)
+				]));
+	});
+var $elm$core$List$concatMap = F2(
+	function (f, list) {
+		return $elm$core$List$concat(
+			A2($elm$core$List$map, f, list));
+	});
+var $author$project$GuessWho$view_all_cards = A2(
+	$elm$html$Html$map,
+	A2($elm$core$Basics$composeL, $author$project$Multiplayer$GameMsg, $author$project$Multiplayer$OtherGameMsg),
+	A2(
+		$elm$html$Html$ul,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('all-cards')
+			]),
+		A2(
+			$elm$core$List$map,
+			function (x) {
+				return $author$project$GuessWho$view_info_card(
+					{
+						info_card: $elm$core$Maybe$Just(x)
+					});
+			},
+			A2($elm$core$List$concatMap, $elm$core$Array$toList, $author$project$Mathematicians$round_definitions))));
+var $elm$core$List$isEmpty = function (xs) {
+	if (!xs.b) {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $elm$html$Html$tbody = _VirtualDom_node('tbody');
+var $elm$html$Html$th = _VirtualDom_node('th');
+var $elm$html$Html$thead = _VirtualDom_node('thead');
+var $elm$html$Html$tr = _VirtualDom_node('tr');
+var $author$project$Multiplayer$RequestJoinGame = function (a) {
+	return {$: 'RequestJoinGame', a: a};
+};
+var $elm$html$Html$td = _VirtualDom_node('td');
+var $author$project$GuessWho$view_lobby_game = function (game) {
+	var num_players = $elm$core$List$length(game.players);
+	return A2(
+		$elm$html$Html$tr,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('game')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(game.id)
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('num-players')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$String$fromInt(num_players))
+					])),
+				A2(
+				$elm$html$Html$td,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Multiplayer$RequestJoinGame(game))
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('join')
+							]))
+					]))
+			]));
+};
+var $author$project$GuessWho$view_games = function (games) {
+	return $elm$core$List$isEmpty(games) ? A2(
+		$elm$html$Html$p,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$text('There are no games at the moment')
+			])) : A2(
+		$elm$html$Html$table,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('games')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$thead,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$tr,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$th,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Game ID')
+									])),
+								A2(
+								$elm$html$Html$th,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text('Players')
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$tbody,
+				_List_Nil,
+				A2($elm$core$List$map, $author$project$GuessWho$view_lobby_game, games))
+			]));
+};
+var $author$project$GuessWho$view_lobby = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('app')
+			]),
+		_List_fromArray(
+			[
+				$author$project$GuessWho$header,
+				function () {
+				var _v0 = model.lobby.screen;
+				if (_v0.$ === 'LobbyMain') {
+					return A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						function () {
+							var _v1 = model.global_state;
+							if (_v1.$ === 'Nothing') {
+								return _List_fromArray(
+									[
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$id('not-connected')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text('Waiting for data from the server.')
+											]))
+									]);
+							} else {
+								var state = _v1.a;
+								return _List_fromArray(
+									[
+										$author$project$GuessWho$view_games(state.games),
+										$author$project$GuessWho$new_game_button(model),
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('info')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$p,
+												_List_Nil,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(
+														$elm$core$String$fromInt(state.num_players) + (' ' + (A3($author$project$Util$pluralise, state.num_players, 'player', 'players') + ' connected')))
+													])),
+												A2(
+												$elm$html$Html$p,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('debug')
+													]),
+												_List_fromArray(
+													[
+														$elm$html$Html$text('You are: ' + model.my_id)
+													])),
+												A2(
+												$elm$html$Html$ul,
+												_List_fromArray(
+													[
+														$elm$html$Html$Attributes$class('debug')
+													]),
+												A2(
+													$elm$core$List$map,
+													function (id) {
+														return A2(
+															$elm$html$Html$li,
+															_List_Nil,
+															_List_fromArray(
+																[
+																	$elm$html$Html$text(id)
+																]));
+													},
+													state.clients))
+											])),
+										A2($author$project$GuessWho$set_lobby_screen_button, $author$project$GuessWho$ViewAllCards, 'View all cards')
+									]);
+							}
+						}());
+				} else {
+					return A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$author$project$GuessWho$view_all_cards,
+								A2($author$project$GuessWho$set_lobby_screen_button, $author$project$GuessWho$LobbyMain, 'Back')
+							]));
+				}
+			}()
+			]));
+};
 var $author$project$GuessWho$view = function (model) {
 	return {
 		body: function () {
@@ -8424,7 +8509,7 @@ var $author$project$GuessWho$view = function (model) {
 			} else {
 				return _List_fromArray(
 					[
-						$author$project$GuessWho$lobby(model)
+						$author$project$GuessWho$view_lobby(model)
 					]);
 			}
 		}(),

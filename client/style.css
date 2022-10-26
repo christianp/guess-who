@@ -199,3 +199,13 @@ main {
         transform: rotate(-1deg);
     }
 }
+
+.all-cards .info-card {
+    flex-basis: 15em;
+}
+.all-cards {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 80vh;
+    overflow-y: auto;
+}

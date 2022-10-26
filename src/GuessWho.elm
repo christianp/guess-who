@@ -80,7 +80,14 @@ type alias Game =
     , info_card : Maybe Card
     }
 
-type alias Model = MultiplayerGame Game
+type LobbyScreen
+    = LobbyMain
+    | ViewAllCards
+
+type alias Lobby =
+    { screen : LobbyScreen }
+
+type alias Model = MultiplayerGame Game Lobby
 
 type GameMsg
     = ClickPiece PlayerID Int Int
@@ -92,9 +99,12 @@ type GameMsg
     | ClickBackground
     | Noop
 
+type LobbyMsg
+    = SetLobbyScreen LobbyScreen
+
 type alias MetaGameMsg = Multiplayer.GameMsg GameMsg
 
-type alias Msg = Multiplayer.Msg GameMsg
+type alias Msg = Multiplayer.Msg GameMsg LobbyMsg
 
 rows = 5
 cols = 5
@@ -145,10 +155,11 @@ blank_round =
     , chosen = Nothing
     }
 
-options : Model -> Multiplayer.GameOptions Game GameMsg
+options : Model -> Multiplayer.GameOptions Game GameMsg Lobby LobbyMsg
 options model = 
     { blank_game = blank_game
     , update_game = update_game model.my_id
+    , update_lobby = update_lobby
     , decode_websocket_message = decode_websocket_message
     , decode_move = decode_move
     }
@@ -206,6 +217,7 @@ decode_move =
 blank_model : Flags -> Model
 blank_model info =
     { game = Nothing
+    , lobby = { screen = LobbyMain }
     , global_state = Nothing
     , my_id = info.id
     }
@@ -342,6 +354,9 @@ click_piece : Int -> Int -> Round -> Round
 click_piece col row round = 
     { round | board = Grid.update_cell (col,row) (\piece -> { piece | up = not piece.up }) round.board }
 
+update_lobby msg lobby = case msg of
+    SetLobbyScreen screen -> { lobby | screen = screen } |> nocmd
+
 subscriptions model = 
     Sub.batch
     [ receiveMessage Multiplayer.WebsocketMessage 
@@ -352,38 +367,48 @@ view model =
     { title = "Guess Who?"
     , body = case model.game of
         Just game -> [ view_game model.my_id game ]
-        Nothing -> [lobby model]
+        Nothing -> [view_lobby model]
     }
 
 header : Html msg
 header = Html.header [] [ Html.h1 [] [ Html.text "Guess Who?" ] ]
 
-lobby : Model -> Html Msg
-lobby model =
+view_lobby : Model -> Html Msg
+view_lobby model =
     Html.div
         [ HA.id "app" ]
         [ header
-        , Html.div
-            []
-            (case model.global_state of
-                Nothing -> [ Html.div [ HA.id "not-connected" ] [ Html.text "Waiting for data from the server." ] ]
-                Just state -> 
-                    [ view_games state.games
-                    , new_game_button model
-                    , Html.div
-                          [ HA.class "info" ]
-                          [ Html.p
-                              []
-                              [ Html.text <| (String.fromInt state.num_players)++" "++(pluralise state.num_players "player" "players")++" connected" ]
-                          , Html.p
-                              [ HA.class "debug" ]
-                              [ Html.text <| "You are: "++model.my_id ]
-                          , Html.ul
-                              [ HA.class "debug" ]
-                              (List.map (\id -> Html.li [] [Html.text id]) state.clients)
-                          ]
-                    ]
-            )
+        , case model.lobby.screen of
+            LobbyMain ->
+                Html.div
+                []
+                (case model.global_state of
+                    Nothing -> [ Html.div [ HA.id "not-connected" ] [ Html.text "Waiting for data from the server." ] ]
+                    Just state -> 
+                        [ view_games state.games
+                        , new_game_button model
+                        , Html.div
+                              [ HA.class "info" ]
+                              [ Html.p
+                                  []
+                                  [ Html.text <| (String.fromInt state.num_players)++" "++(pluralise state.num_players "player" "players")++" connected" ]
+                              , Html.p
+                                  [ HA.class "debug" ]
+                                  [ Html.text <| "You are: "++model.my_id ]
+                              , Html.ul
+                                  [ HA.class "debug" ]
+                                  (List.map (\id -> Html.li [] [Html.text id]) state.clients)
+                              ]
+                        , set_lobby_screen_button ViewAllCards "View all cards"
+                        ]
+                )
+
+            ViewAllCards ->
+                Html.div
+                []
+                [ view_all_cards
+                , set_lobby_screen_button LobbyMain "Back"
+                ]
         ]
 
 
@@ -425,6 +450,13 @@ view_lobby_game game =
                     [ Html.text "join" ]
                 ]
             ]
+
+set_lobby_screen_button : LobbyScreen -> String -> Html Msg
+set_lobby_screen_button screen label =
+    Html.button
+        [ HE.onClick (Multiplayer.LobbyMsg (SetLobbyScreen screen))
+        ]
+        [ Html.text label ]
 
 new_game_button : Model -> Html Msg
 new_game_button model =
@@ -662,6 +694,7 @@ view_chosen_card round my_state player =
                 view_card False card
         ]
 
+view_info_card : { a | info_card: Maybe Card } -> Html GameMsg
 view_info_card game = case game.info_card of
     Just card -> 
         div
@@ -683,3 +716,9 @@ view_info_card game = case game.info_card of
         div 
             [ HA.class "info-card hidden" ]
             []
+
+view_all_cards =
+    Html.map (Multiplayer.GameMsg << OtherGameMsg) <| 
+        Html.ul
+            [ HA.class "all-cards" ]
+            (List.map (\x -> view_info_card {info_card = Just x}) (List.concatMap Array.toList round_definitions))

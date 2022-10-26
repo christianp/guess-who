@@ -7,15 +7,17 @@ import Json.Encode as JE
 type alias GameID = String
 type alias PlayerID = String
 
-type alias GameOptions game gamemsg =
+type alias GameOptions game gamemsg lobby lobbymsg =
     { update_game : GameMsg gamemsg -> game -> (game, Cmd (GameMsg gamemsg))
-    , blank_game : PlayerID -> (List PlayerID) -> Int -> (game, Cmd (Msg gamemsg))
+    , update_lobby: lobbymsg -> lobby -> (lobby, Cmd lobbymsg)
+    , blank_game : PlayerID -> (List PlayerID) -> Int -> (game, Cmd (Msg gamemsg lobbymsg))
     , decode_websocket_message : JD.Decoder (List (GameMsg gamemsg))
     , decode_move : JD.Decoder (List (GameMsg gamemsg))
     }
 
-type alias MultiplayerGame game =
+type alias MultiplayerGame game lobby =
     { game : Maybe game
+    , lobby: lobby
     , global_state : Maybe GlobalState
     , my_id : PlayerID
     }
@@ -49,26 +51,27 @@ send_message action = (::) ("action", JE.string action) >> Dict.fromList >> JE.d
 send_game_message : String -> List (String, JE.Value) -> Cmd msg
 send_game_message action data = send_message "game" [ ("data", JE.object ([("action", JE.string action)]++data)) ]
 
-type Msg gamemsg
+type Msg gamemsg lobbymsg
     = JoinGame String (List (GameMsg gamemsg)) (List PlayerID) Int
     | RequestJoinGame GameInfo
     | LeaveGame
     | GameMsg (GameMsg gamemsg)
+    | LobbyMsg lobbymsg
     | WebsocketMessage JE.Value
     | NewGame
     | RequestGlobalState
     | SetGlobalState GlobalState
 
-game_message : gamemsg -> Msg gamemsg
+game_message : gamemsg -> Msg gamemsg lobbymsg
 game_message = OtherGameMsg >> GameMsg
 
 nocmd : model -> (model, Cmd msg)
 nocmd model = (model, Cmd.none)
 
-get_global_stats : Cmd (Msg gamemsg)
+get_global_stats : Cmd (Msg gamemsg lobbymsg)
 get_global_stats = send_message "global_stats" []
 
-update : (MultiplayerGame game -> GameOptions game gamemsg) -> Msg gamemsg -> MultiplayerGame game -> (MultiplayerGame game, Cmd (Msg gamemsg))
+update : (MultiplayerGame game lobby -> GameOptions game gamemsg lobby lobbymsg) -> Msg gamemsg lobbymsg -> MultiplayerGame game lobby -> (MultiplayerGame game lobby, Cmd (Msg gamemsg lobbymsg))
 update options_fn msg model = 
     let
         options = options_fn model
@@ -92,6 +95,11 @@ update options_fn msg model =
                                 (ng, gcmd) = options.update_game gmsg game
                             in
                                 ({ model | game = Just ng }, Cmd.map GameMsg gcmd)
+            LobbyMsg lmsg ->
+                let
+                    (nl, lcmd) = options.update_lobby lmsg model.lobby
+                in
+                    ({ model | lobby = nl }, Cmd.map LobbyMsg lcmd)
             WebsocketMessage encoded_data -> apply_websocket_message options encoded_data model
             NewGame -> (model, send_message "new_game" [])
             RequestGlobalState -> (model, get_global_stats )
@@ -111,10 +119,10 @@ apply_updates updater model msgs =
         msgs
 
 
-apply_websocket_message : GameOptions game gamemsg -> JE.Value -> MultiplayerGame game -> (MultiplayerGame game, Cmd (Msg gamemsg))
+apply_websocket_message : GameOptions game gamemsg lobby lobbymsg -> JE.Value -> MultiplayerGame game lobby -> (MultiplayerGame game lobby, Cmd (Msg gamemsg lobbymsg))
 apply_websocket_message options encoded_data model =
     let
-        standard_actions : JD.Decoder (List (Msg gamemsg))
+        standard_actions : JD.Decoder (List (Msg gamemsg lobbymsg))
         standard_actions = 
             JD.field "action" JD.string
             |> JD.andThen (\action ->
