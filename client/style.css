@@ -8,12 +8,17 @@ body {
     font-family: 'Computer Modern Concrete';
 }
 
-main {
-  height: 100vh;
+#app.lobby {
   display: grid;
+  justify-content: center;
 }
 .controls {
   align-self: end;
+}
+
+main {
+    height: 100vh;
+    display: grid;
 }
 
 .container {
@@ -179,7 +184,7 @@ main {
 }
 
 
-.controls:not(.always-visible) button:not(:hover) {
+.controls:not(.always-visible) :is(button,select):not(:hover) {
   opacity: 0;
   transition: opacity 0s;
 }

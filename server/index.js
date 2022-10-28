@@ -18,6 +18,7 @@ function random_id() {
 class Game {
     constructor(server) {
         this.server = server;
+        this.start_time = new Date();
         this.id = random_id();
         this.state = 'beginning';
         this.players = [];
@@ -26,7 +27,7 @@ class Game {
     }
 
     send(data, exclude_clients = []) {
-        const clients = this.players.map(id => this.server.clients_by_id.get(id)).filter(c=>exclude_clients.indexOf(c)==-1);
+        const clients = this.players.map(c => this.server.clients_by_id.get(c.id)).filter(c => c && exclude_clients.indexOf(c)==-1);
         data.game_id = this.id;
         console.log('game send',data)
         for(let c of clients) {
@@ -51,26 +52,24 @@ class Game {
         this.move(client, data);
     }
 
-    add_player(player_id) {
-        if(this.players.indexOf(player_id) >= 0) {
+    add_player(client) {
+        if(this.players.find(c=>c.id == client.id)) {
             throw(new Error("You're already in this game."));
         }
-        this.players.push(player_id);
-        this.send({action: 'game_player_joined', player_id: player_id});
+        this.players.push(client);
+        this.send({action: 'game_player_joined', client: client.json_summary()});
     }
 
-    remove_player(player_id) {
-        console.log(`remove ${player_id}`);
-        //console.log(this.players);
-        //this.players = this.players.filter(id=>id!=player_id);
-        //this.end();
+    remove_player(client) {
+        console.log(`remove ${client.id}`);
+        this.players = this.players.filter(c=>c.id != client.id);
     }
 
     info() {
         return {
             id: this.id,
             state: this.state,
-            players: this.players,
+            players: this.players.map(c=>c.json_summary()),
             history: this.history
         }
     }
@@ -83,12 +82,12 @@ class Game {
     }
   
     write_log() {
-      fs.writeFile(`games/${this.id}.json`, JSON.stringify(this.history), err => {
-          if (err) {
-            console.error(err)
-            return
-          }
-      });
+        fs.writeFile(`games/${this.start_time.toISOString()}-${this.id}.json`, JSON.stringify(this.history), err => {
+            if (err) {
+                console.error(err)
+                return
+            }
+        });
     }
 
     end() {
@@ -105,7 +104,16 @@ class Client {
         this.ws = ws;
         this.state = 'uninitialised';
         this.closed = false;
+        this.id = null;
+        this.name = null;
         console.log('new connection',this.n);
+    }
+
+    json_summary() {
+        return {
+            id: this.id,
+            name: this.name
+        };
     }
 
     send(data) {
@@ -141,6 +149,11 @@ class Client {
         this.send({action: 'hi', message: `hi, ${id}`});
     }
 
+    set_name(name) {
+        console.log(`set name for "${this.id}" to "${name}"`);
+        this.name = name;
+    }
+
     join_game(game) {
         if(this.game) {
             this.error(`You're already in the game ${this.game.id}`);
@@ -149,8 +162,8 @@ class Client {
         this.game = game;
         console.log(`${this.id} joining game ${game.id}`);
         try {
-            game.add_player(this.id);
-            this.send({action: 'join_game', state: game.info(), my_index: game.players.indexOf(this.id)});
+            game.add_player(this);
+            this.send({action: 'join_game', state: game.info(), my_index: game.players.map(c=>c.id).indexOf(this.id)});
         } catch(e) {
             this.error(`Error joining the game ${game.id}: ${e}`);
         }
@@ -165,7 +178,7 @@ class Client {
         const game = this.game;
         console.log(`${this.id}l leaving game ${game.id}`);
         this.game = null;
-        game.remove_player(this.id);
+        game.remove_player(this);
         this.send({action: 'left_game', id: game.id});
     }
 
@@ -197,7 +210,7 @@ class Client {
             this.timeout = null;
         }
         if(this.game) {
-            this.send({action: 'join_game', state: this.game.info(), my_index: this.game.players.indexOf(this.id)});
+            this.send({action: 'join_game', state: this.game.info(), my_index: this.game.players.map(c=>c.id).indexOf(this.id)});
         }
     }
 
@@ -227,7 +240,13 @@ class Client {
     }
 
     handle_init(data) {
-        this.set_id(data.id);
+        console.log(data);
+        this.set_id(data.info.id);
+        this.set_name(data.info.name);
+    }
+
+    handle_set_name(data) {
+        this.set_name(data.name);
     }
 
     handle_new_game(data) {
@@ -319,7 +338,7 @@ class GameServer {
     global_stats() {
         return {
             num_clients: Array.from(this.clients.values()).filter(c=>!c.closed).length,
-            clients: Array.from(this.clients.values()).map(c=>`${c.n}-${c.id}-${c.closed ? 'c' : 'o'}`),
+            clients: Array.from(this.clients.values()).filter(c=>c.id).map(c => c.json_summary()),
             games: Array.from(this.games.values()).map(g=>g.info())
         }
     }

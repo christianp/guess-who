@@ -2,8 +2,8 @@ const loc = window.location;
 const WEBSOCKET_URL = (loc.protocol == 'https:' ? 'wss:' : 'ws:') + loc.host + loc.pathname;
 
 export class Client {
-    constructor(id, message_callback) {
-        this.id = id;
+    constructor(info, message_callback) {
+        this.info = info;
         this.open_websocket();
         this.message_callback = message_callback;
     }
@@ -14,7 +14,7 @@ export class Client {
             ws.addEventListener('open', e => {
                 console.log('ws open');
                 resolve(ws);
-                this.send({action:'init', id: this.id});
+                this.send({action:'init', info: this.info});
             })
             ws.addEventListener('message', e => {
                 this.receive_message(JSON.parse(e.data));
@@ -30,7 +30,7 @@ export class Client {
     }
 
     receive_message(data) {
-        if(!(data && data.action=='global_stats')) {
+        if(!(data && data.action=='aglobal_stats')) {
             console.log('receive',data);
         }
         this.message_callback(data);

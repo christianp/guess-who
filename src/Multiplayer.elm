@@ -1,16 +1,33 @@
-port module Multiplayer exposing (MultiplayerGame, GameID, PlayerID, GameInfo, GlobalState, GameMsg(..), send_message, Msg(..), GameOptions, get_global_stats, update, decode_global_state, decode_game_info, game_message, send_game_message)
+port module Multiplayer exposing 
+    ( MultiplayerGame
+    , GameID
+    , ClientID
+    , ClientInfo
+    , GameInfo
+    , GlobalState
+    , GameMsg(..)
+    , send_message
+    , Msg(..)
+    , GameOptions
+    , get_global_stats
+    , update
+    , decode_global_state
+    , decode_game_info
+    , game_message
+    , send_game_message
+    )
 
 import Dict
 import Json.Decode as JD
 import Json.Encode as JE
 
 type alias GameID = String
-type alias PlayerID = String
+type alias ClientID = String
 
 type alias GameOptions game gamemsg lobby lobbymsg =
     { update_game : GameMsg gamemsg -> game -> (game, Cmd (GameMsg gamemsg))
     , update_lobby: lobbymsg -> lobby -> (lobby, Cmd lobbymsg)
-    , blank_game : PlayerID -> (List PlayerID) -> Int -> (game, Cmd (Msg gamemsg lobbymsg))
+    , blank_game : ClientID -> (List ClientInfo) -> Int -> (game, Cmd (Msg gamemsg lobbymsg))
     , decode_websocket_message : JD.Decoder (List (GameMsg gamemsg))
     , decode_move : JD.Decoder (List (GameMsg gamemsg))
     }
@@ -19,18 +36,23 @@ type alias MultiplayerGame game lobby =
     { game : Maybe game
     , lobby: lobby
     , global_state : Maybe GlobalState
-    , my_id : PlayerID
+    , my_id : ClientID
+    }
+
+type alias ClientInfo =
+    { id : ClientID
+    , name : Maybe String
     }
 
 type alias GameInfo =
     { id : GameID
-    , players: List PlayerID
+    , players: List ClientInfo
     , state : String
     }
 
 type alias GlobalState =
     { games : List GameInfo
-    , clients : List PlayerID
+    , clients : List ClientInfo
     , num_players : Int
     }
 
@@ -38,7 +60,7 @@ type GameMsg msg
     = Restart
     | StartReplay
     | EndReplay
-    | PlayerJoined PlayerID
+    | ClientJoined ClientInfo
     | EndGame
     | OtherGameMsg msg
 
@@ -52,7 +74,7 @@ send_game_message : String -> List (String, JE.Value) -> Cmd msg
 send_game_message action data = send_message "game" [ ("data", JE.object ([("action", JE.string action)]++data)) ]
 
 type Msg gamemsg lobbymsg
-    = JoinGame String (List (GameMsg gamemsg)) (List PlayerID) Int
+    = JoinGame String (List (GameMsg gamemsg)) (List ClientInfo) Int
     | RequestJoinGame GameInfo
     | LeaveGame
     | GameMsg (GameMsg gamemsg)
@@ -135,11 +157,11 @@ apply_websocket_message options encoded_data model =
                         <| JD.map4 JoinGame
                             (JD.at ["state","id"] JD.string)
                             (JD.map List.concat (JD.at ["state", "history"] (JD.list options.decode_move)))
-                            (JD.at ["state", "players"] (JD.list JD.string))
+                            (JD.at ["state", "players"] (JD.list decode_client))
                             (JD.field "my_index" JD.int)
                     "game_player_joined" ->
-                        JD.field "player_id" JD.string
-                        |> JD.map (PlayerJoined >> GameMsg >> List.singleton)
+                        JD.field "client" decode_client
+                        |> JD.map (ClientJoined >> GameMsg >> List.singleton)
                     "end_game" ->
                         JD.succeed [GameMsg EndGame]
                     "global_stats" -> JD.map (SetGlobalState >> List.singleton) decode_global_state
@@ -168,12 +190,19 @@ decode_global_state =
     JD.map3
         GlobalState
         (JD.field "games" (JD.list decode_game_info))
-        (JD.field "clients" (JD.list JD.string))
+        (JD.field "clients" (JD.list decode_client))
         (JD.field "num_clients" JD.int)
 
 decode_game_info : JD.Decoder GameInfo
 decode_game_info =
     JD.map3 GameInfo
         (JD.field "id" JD.string)
-        (JD.field "players" (JD.list JD.string))
+        (JD.field "players" (JD.list decode_client))
         (JD.field "state" JD.string)
+
+decode_client : JD.Decoder ClientInfo
+decode_client = 
+    JD.map2 ClientInfo
+        (JD.field "id" JD.string)
+        (JD.field "name" (JD.nullable JD.string))
+

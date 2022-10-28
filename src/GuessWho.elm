@@ -12,7 +12,7 @@ import Json.Decode as JD
 import Json.Decode.Extra
 import Json.Encode as JE
 import Mathematicians exposing (round_definitions)
-import Multiplayer exposing (MultiplayerGame, GameID, PlayerID, GameMsg(..), Msg(..))
+import Multiplayer exposing (MultiplayerGame, GameID, ClientID, ClientInfo, GameMsg(..), Msg(..))
 import Random
 import Random.Array
 import Random.Extra
@@ -52,12 +52,17 @@ type alias Board = Grid Piece
 type Role
     = InCharge
     | Playing
-    | Observing
+
+type alias ClientState =
+    { id : ClientID
+    , role : Role
+    , name : String
+    }
 
 type alias PlayerState =
-    { id : PlayerID
-    , role : Role
-    , rounds : Array Round
+    { client: Maybe ClientID
+    , rounds: Array Round
+    , id: Int
     }
 
 type alias Round =
@@ -72,6 +77,7 @@ type GameStage
 
 type alias Game =
     { id : GameID
+    , clients : List ClientState
     , players : List PlayerState
     , my_index : Int
     , stage : GameStage
@@ -81,16 +87,22 @@ type alias Game =
     }
 
 type LobbyScreen
-    = LobbyMain
+    = SetName
+    | LobbyMain
     | ViewAllCards
 
 type alias Lobby =
-    { screen : LobbyScreen }
+    { screen : LobbyScreen
+    , my_name : String
+    }
 
 type alias Model = MultiplayerGame Game Lobby
 
+type alias PlayerID = Int
+
 type GameMsg
     = ClickPiece PlayerID Int Int
+    | SetPlayerClient PlayerID (Maybe ClientID)
     | StartShufflingCards
     | ShuffledCards (List (Array Card, List Card))
     | SetRound Int
@@ -101,6 +113,7 @@ type GameMsg
 
 type LobbyMsg
     = SetLobbyScreen LobbyScreen
+    | SetMyName String
 
 type alias MetaGameMsg = Multiplayer.GameMsg GameMsg
 
@@ -117,10 +130,12 @@ make_board cards =
     in
         { width = cols, height = rows, cells = pieces }
 
-blank_game game_id players my_index = 
+blank_game : GameID -> List ClientInfo -> Int -> (Game, Cmd Msg)
+blank_game game_id clients my_index = 
     ( { id = game_id
       , my_index = my_index
-      , players = List.indexedMap blank_player players
+      , clients = List.indexedMap blank_client clients
+      , players = List.map blank_player (List.range 0 1)
       , stage = WaitingToStart
       , replaying = False
       , show_chosen_cards = False
@@ -140,14 +155,18 @@ shuffle_round card_definitions =
      |> Random.map (pair shuffled)
     )
 
-blank_player i id =
-    { id = id
-    , rounds = Array.empty
+blank_client i info =
+    { id = info.id
     , role = case i of
         0 -> InCharge
-        1 -> Playing
-        2 -> Playing
-        _ -> Observing
+        _ -> Playing
+    , name = Maybe.withDefault "Anonymous" info.name
+    }
+
+blank_player i =
+    { client = Nothing
+    , rounds = Array.empty
+    , id = i
     }
 
 blank_round =
@@ -193,6 +212,11 @@ decode_move =
             q = Debug.log "move action" action
         in
             case action of
+                "set player client" ->
+                    JD.map2
+                        (\player_id -> \client_id -> [OtherGameMsg (SetPlayerClient player_id client_id)])
+                        (JD.field "player" JD.int)
+                        (JD.field "client" (JD.nullable JD.string))
                 "shuffle cards" -> 
                     JD.map (\rounds -> [OtherGameMsg (ShuffledCards rounds)])
                         (JD.field "rounds" (Json.Decode.Extra.sequence (List.map decode_round_definition round_definitions)))
@@ -206,7 +230,7 @@ decode_move =
                 "click piece" ->
                     JD.map3
                         (\id -> \col -> \row -> [OtherGameMsg (ClickPiece id col row)])
-                        (JD.field "player" JD.string)
+                        (JD.field "player" JD.int)
                         (JD.field "col" JD.int)
                         (JD.field "row" JD.int)
                 _ -> JD.succeed []
@@ -217,25 +241,26 @@ decode_move =
 blank_model : Flags -> Model
 blank_model info =
     { game = Nothing
-    , lobby = { screen = LobbyMain }
+    , lobby = { screen = if info.my_name == "" then SetName else LobbyMain, my_name = info.my_name }
     , global_state = Nothing
     , my_id = info.id
     }
 
 type alias Flags = 
     { id : String 
+    , my_name : String
     }
 
 decode_flags : JD.Decoder Flags
-decode_flags = JD.map (\id -> { id = id }) (JD.field "id" JD.string)
+decode_flags = JD.map2 Flags (JD.field "id" JD.string) (JD.oneOf [JD.field "name" JD.string, JD.succeed ""])
 
 init : JE.Value -> (Model, Cmd Msg)
-init flags = case JD.decodeValue decode_flags flags of
+init flags = case (Debug.log "flags" <| JD.decodeValue decode_flags flags) of
     Ok info -> 
         ( blank_model info 
         , Cmd.none
         )
-    Err _ -> (blank_model {id = ""}, Cmd.none)
+    Err _ -> (blank_model {id = "", my_name = ""}, Cmd.none)
 
 nocmd model = (model, Cmd.none)
 
@@ -251,7 +276,7 @@ send_move game action data =
     else
         Multiplayer.send_game_message "move" [ ("move", (JE.object ([ ("action", JE.string action) ] ++ data))) ]
 
-update_game : PlayerID -> MetaGameMsg -> Game -> (Game, Cmd MetaGameMsg)
+update_game : ClientID -> MetaGameMsg -> Game -> (Game, Cmd MetaGameMsg)
 update_game my_id msg game = 
     let
         my_state = get_my_state my_id game
@@ -314,9 +339,20 @@ update_game my_id msg game =
             OtherGameMsg (ClickPiece player_id col row) -> 
                 ( update_for_player player_id (click_piece col row) game
                 , send_move game "click piece"
-                    [ ("player", JE.string player_id)
+                    [ ("player", JE.int player_id)
                     , ("col", JE.int col)
                     , ("row", JE.int row)
+                    ]
+                )
+
+            OtherGameMsg (SetPlayerClient player_id client_id) ->
+                ( set_player_client player_id client_id game
+                , send_move game "set player client"
+                    [ ("player", JE.int player_id)
+                    , ("client", case client_id of
+                        Nothing -> JE.null
+                        Just id -> JE.string id
+                      )
                     ]
                 )
 
@@ -333,11 +369,16 @@ update_game my_id msg game =
 
             OtherGameMsg ClickBackground -> { game | info_card = Nothing } |> nocmd
 
-            PlayerJoined id -> { game | players = game.players++[blank_player (List.length game.players) id] } |> nocmd
+            ClientJoined client -> { game | clients = game.clients ++ [blank_client (List.length game.clients) client] } |> nocmd
 
             EndGame -> { game | stage = Finished } |> nocmd
 
             _ -> (game, Cmd.none)
+
+set_player_client : PlayerID -> Maybe ClientID -> Game -> Game
+set_player_client player_id client_id game =
+    { game | players = List.map (\p -> if p.id == player_id then { p | client = client_id } else p) game.players }
+
 
 update_for_player : PlayerID -> (Round -> Round) -> Game -> Game
 update_for_player id fn game = 
@@ -356,6 +397,10 @@ click_piece col row round =
 
 update_lobby msg lobby = case msg of
     SetLobbyScreen screen -> { lobby | screen = screen } |> nocmd
+    SetMyName name ->
+        ( { lobby | my_name = name } 
+        , Multiplayer.send_message "set_name" [ ("name", JE.string name) ]
+        )
 
 subscriptions model = 
     Sub.batch
@@ -376,9 +421,20 @@ header = Html.header [] [ Html.h1 [] [ Html.text "Guess Who?" ] ]
 view_lobby : Model -> Html Msg
 view_lobby model =
     Html.div
-        [ HA.id "app" ]
+        [ HA.id "app" 
+        , HA.class "lobby"
+        ]
         [ header
         , case model.lobby.screen of
+            SetName ->
+                Html.form
+                    [ HE.onSubmit <| Multiplayer.LobbyMsg (SetLobbyScreen LobbyMain) ]
+                    [ input_name model
+                    , Html.button
+                        [ HA.type_ "submit" ]
+                        [ Html.text "That's me" ]
+                    ]
+
             LobbyMain ->
                 Html.div
                 []
@@ -394,10 +450,10 @@ view_lobby model =
                                   [ Html.text <| (String.fromInt state.num_players)++" "++(pluralise state.num_players "player" "players")++" connected" ]
                               , Html.p
                                   [ HA.class "debug" ]
-                                  [ Html.text <| "You are: "++model.my_id ]
+                                  [ Html.text <| "You are: "++model.lobby.my_name++" ("++model.my_id++")" ]
                               , Html.ul
                                   [ HA.class "debug" ]
-                                  (List.map (\id -> Html.li [] [Html.text id]) state.clients)
+                                  (List.map (\c -> Html.li [] [Html.text <| (Maybe.withDefault "Anonymous" c.name) ++ " ("++ c.id ++ ")"]) state.clients)
                               ]
                         , set_lobby_screen_button ViewAllCards "View all cards"
                         ]
@@ -409,6 +465,22 @@ view_lobby model =
                 [ view_all_cards
                 , set_lobby_screen_button LobbyMain "Back"
                 ]
+        ]
+
+input_name : Model -> Html Msg
+input_name model = 
+    Html.div
+        [ HA.class "input-name" ]
+        [ Html.label 
+            [ HA.for "input-name"
+            ]
+            [ Html.text "Your name:" ]
+        , Html.input
+            [ HA.type_ "text"
+            , HA.value model.lobby.my_name
+            , HE.onInput (SetMyName >> Multiplayer.LobbyMsg)
+            ]
+            []
         ]
 
 
@@ -466,10 +538,10 @@ new_game_button model =
         ]
         [ Html.text "Start a new game" ]
 
-get_my_state : PlayerID -> Game -> PlayerState
-get_my_state my_id game = game.players |> List.filter (\p -> p.id == my_id) |> List.head |> Maybe.withDefault (blank_player -1 my_id)
+get_my_state : ClientID -> Game -> ClientState
+get_my_state my_id game = game.clients |> List.filter (\p -> p.id == my_id) |> List.head |> Maybe.withDefault (blank_client -1 {id = my_id, name = Nothing})
 
-view_game : PlayerID -> Game -> Html Msg
+view_game : ClientID -> Game -> Html Msg
 view_game my_id game = 
     let
         num_players = (playing_players >> List.length) game
@@ -478,24 +550,30 @@ view_game my_id game =
             case game.stage of
                 WaitingToStart -> 
                     div
-                        []
+                        [ HA.id "app"
+                        , HA.class "waiting-to-start"
+                        ]
+
                         [ Html.h1 [] [ Html.text game.id ]
                         , Html.p [] [ Html.text "Waiting for players" ]
                         , Html.p [] [ Html.text <| (fi num_players)++" "++(pluralise num_players "player" "players") ]
                         , Html.ul
                             []
-                            (List.map (\p -> 
+                            (List.map (\c -> 
                                 Html.li
                                     []
-                                    [ Html.text <| p.id ++ " : " ++(if p.role == InCharge then "in charge" else "playing") ]
-                            ) game.players )
+                                    [ Html.text <| c.name ++ " ("++ c.id ++ ")" ++ " : " ++(if c.role == InCharge then "in charge" else "playing") ]
+                            ) game.clients )
                         ]
 
                 InProgress round -> view_boards round my_state game
 
                 Finished -> 
                     div
-                        []
+                        [ HA.id "app"
+                        , HA.class "finished"
+                        ]
+
                         [ Html.p [] [ Html.text "The game is finished" ] 
                         ]
 
@@ -509,16 +587,19 @@ view_game my_id game =
                     , ("always-visible", not (is_in_progress game))
                     ]
                 ]
-                (List.map 
-                    (\b ->
-                        Html.button
-                            [ HE.onClick b.msg 
-                            , HA.disabled b.disabled
-                            ]
-                            [ Html.text b.label ]
+                (
+                    (List.map 
+                        (\b ->
+                            Html.button
+                                [ HE.onClick b.msg 
+                                , HA.disabled b.disabled
+                                ]
+                                [ Html.text b.label ]
+                        )
+                        (List.filter .show buttons)
                     )
-                    (List.filter .show buttons)
-                )
+                 ++ (player_select game my_state)
+                 )
 
     in
         Html.main_
@@ -531,17 +612,17 @@ is_in_progress game = case game.stage of
     InProgress _ -> True
     _ -> False
 
-control_buttons : Game -> PlayerState -> List { show : Bool, disabled: Bool, msg : Msg, label : String, key : String }
+control_buttons : Game -> ClientState -> List { show : Bool, disabled: Bool, msg : Msg, label : String, key : String }
 control_buttons game my_state =
     let
-        num_players = (playing_players >> List.length) game
+        num_clients = List.length game.clients
 
         round_number = case game.stage of
             InProgress n -> n
             _ -> -1
     in
         [ { show = game.stage == WaitingToStart && my_state.role == InCharge
-          , disabled = num_players < 2
+          , disabled = num_clients < 3
           , msg = Multiplayer.game_message StartShufflingCards
           , label = "Start the game"
           , key = "s"
@@ -572,6 +653,25 @@ control_buttons game my_state =
           }
         ]
 
+player_select : Game -> ClientState -> List (Html Msg)
+player_select game my_state =
+    case my_state.role of
+        InCharge ->
+            let
+                select_for player =
+                    Html.select
+                        [ HE.onInput (\id -> Multiplayer.game_message (SetPlayerClient player.id (if id=="" then Nothing else Just id))) ]
+                        (List.map (\c ->
+                            Html.option
+                                [ HA.value (if c.role == InCharge then "" else c.id)
+                                , HA.selected (player.client == Just c.id)
+                                ]
+                                [ Html.text <| if c.role == InCharge then "" else c.name ]
+                        ) game.clients)
+            in
+                List.map select_for game.players
+
+        Playing -> []
 
 handle_keypress : Model -> JD.Decoder Msg
 handle_keypress model = case model.game of
@@ -588,30 +688,33 @@ handle_keypress model = case model.game of
 
     Nothing -> JD.fail ""
 
-is_player p = p.role == Playing
+is_player p = p.client /= Nothing
 
 playing_players game = List.filter is_player game.players
 
-view_boards : Int -> PlayerState -> Game -> Html GameMsg
+view_boards : Int -> ClientState -> Game -> Html GameMsg
 view_boards round_number my_state game =
     let
         vp = view_player round_number my_state
+        my_player = List.head <| List.filter (\p -> p.client == Just my_state.id) game.players
     in
-        case my_state.role of
-            Playing -> 
+        case my_player of
+            Just player -> 
                 div
-                    [ HA.class "container one" 
+                    [ HA.id "app"
+                    , HA.class "container one" 
                     ]
-                    [ vp True (game.my_index-1) my_state ]
+                    [ vp True player.id player ]
 
-            _ ->
+            Nothing ->
                 div
-                    [ HA.class "container both"
+                    [ HA.id "app"
+                    , HA.class "container both"
                     , HE.onClick ClickBackground
                     ]
-                    ((List.indexedMap (vp game.show_chosen_cards) (playing_players game)) ++ [view_info_card game])
+                    ((List.indexedMap (vp (game.show_chosen_cards && my_state.role == InCharge)) game.players) ++ [view_info_card game])
 
-view_player : Int -> PlayerState -> Bool -> Int -> PlayerState -> Html GameMsg
+view_player : Int -> ClientState -> Bool -> Int -> PlayerState -> Html GameMsg
 view_player round_number my_state show_chosen_card index state =
     let
         round = Array.get round_number state.rounds |> Maybe.withDefault blank_round
@@ -631,11 +734,11 @@ view_player round_number my_state show_chosen_card index state =
 stopPropagationOn : String -> msg -> Html.Attribute msg
 stopPropagationOn name msg = HE.stopPropagationOn name (JD.succeed (msg, True))
 
-view_board : Round -> PlayerState -> PlayerState -> Html GameMsg
+view_board : Round -> ClientState -> PlayerState -> Html GameMsg
 view_board round my_state player =
     let
         board = round.board
-        is_me = my_state.id == player.id
+        is_me = player.client == Just my_state.id
         view_piece col row piece =
             Html.div
                 ( [ HA.classList
